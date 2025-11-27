@@ -1,867 +1,956 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Conjugaison – Verbes</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-/* Style enfant, cohérent avec les autres pages, couleur conjugaison (orange vif) */
-body {
-  font-family: system-ui, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f6fb;
-  color: #222;
-}
-header {
-  background: #FF8A00; /* Orange vif pour la conjugaison */
-  color: #fff;
-  padding: 1rem 1.2rem;
-  text-align: center;
-  font-size: 1.4rem;
-  font-weight: bold;
-}
-.container {
-  max-width: 800px;
-  margin: 1rem auto;
-  background: #ffffff;
-  padding: 1.2rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-}
-button {
-  background: #FF8A00;
-  color: #fff;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 8px;
-  font-size: 1rem;
-}
-button:hover { background: #e67600; }
+  <meta charset="UTF-8">
+  <title>Conjugaison – Enfant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  margin-top: 8px;
-  font-size: 1rem;
-}
+  <style>
+    :root {
+      --bg-main: #e0f2fe;
+      --bg-gradient-1: #eef2ff;
+      --bg-gradient-2: #e0f2fe;
 
-#feedback { font-weight:bold; margin-top: 8px; }
-ul { padding-left: 20px; }
+      --card-light: #ffffff;
+      --card-soft: #f8fafc;
 
-small {
-  color:#555;
-}
+      --accent: #fb923c;
+      --accent-strong: #ea580c;
+      --accent-soft: #fed7aa;
+      --accent-alt: #22c55e;
+      --accent-blue: #3b82f6;
 
-/* barre d'info & progression, comme pour les tables */
-.info-bar {
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin:8px 0;
-  font-weight:bold;
-}
-.progress {
-  width:100%;
-  height:8px;
-  background:#ffe0bf;
-  border-radius:999px;
-  overflow:hidden;
-  margin-bottom:8px;
-}
-.progress-inner {
-  height:100%;
-  width:0%;
-  background:#FF8A00;
-  transition: width 0.2s ease-out;
-}
-</style>
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --border-subtle: rgba(148, 163, 184, 0.6);
+
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+        radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #f9fafb;
+      padding: 0.8rem 1.4rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .header-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      background: #fef3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #b45309;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 650;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .stars-pill {
+      border-radius: var(--radius-pill);
+      padding: 0.2rem 0.7rem;
+      background: rgba(250, 204, 21, 0.2);
+      border: 1px solid rgba(250, 204, 21, 0.8);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #facc15;
+    }
+
+    .stars-pill span.num {
+      font-weight: 700;
+      color: #fefce8;
+    }
+
+    .btn-retour {
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-pill);
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.3), rgba(15, 23, 42, 1));
+      color: #e0f2fe;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-retour span.icon { font-size: 1rem; }
+
+    main { flex: 1; }
+
+    .page {
+      max-width: 980px;
+      margin: 1.2rem auto 1.8rem;
+      padding: 0 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #fef3c7, #fee2e2);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+    }
+
+    .hero-text { font-size: 0.95rem; }
+
+    .hero-badge {
+      border-radius: var(--radius-pill);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      padding: 0.4rem 0.7rem;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card {
+      background: var(--card-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.2rem;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card h2 .icon { font-size: 1.2rem; }
+
+    .info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .info-pill {
+      border-radius: var(--radius-pill);
+      background: #e0f2fe;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent-alt);
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 0.8rem;
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transition: width 0.25s ease-out;
+    }
+
+    #instruction {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+
+    #currentQuestion {
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+      color: var(--text-muted);
+    }
+
+    #answerInput {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    #answerInput:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 1px rgba(251,146,60,0.7);
+    }
+
+    .btn-main {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 0.45rem 1.1rem;
+      background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+      color: #fefce8;
+      font-weight: 650;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-right: 0.4rem;
+    }
+
+    #feedback {
+      margin-top: 0.5rem;
+      font-weight: 600;
+      min-height: 1.2rem;
+    }
+
+    #result { display: none; }
+
+    #finalScore {
+      font-size: 1rem;
+      font-weight: 650;
+      margin-bottom: 0.4rem;
+    }
+
+    #starsGain {
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+
+    #mistakes {
+      padding-left: 1.1rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+    }
+
+    #mistakes li { margin-bottom: 0.2rem; }
+
+    .warning {
+      font-size: 0.95rem;
+      color: #b91c1c;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>Conjugaison – Verbes 🔤</header>
-
-<div style="margin:10px;">
-  <a href="index.html"
-     style="display:inline-block;background:#FF8A00;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
-    ⟵ Retour à l'accueil
-  </a>
-</div>
-
-<!-- MODE "PARENT" = simple explication, pas de réglages -->
-<div class="container">
-  <h2>Mode parent – Fonctionnement</h2>
-  <p>
-    Ce module est <strong>totalement autonome</strong> :
-  </p>
-  <ul>
-    <li>L’ordinateur choisit <strong>aléatoirement</strong> le verbe, le temps et la personne.</li>
-    <li>Les temps travaillés : <strong>présent, imparfait, futur simple, passé composé, impératif</strong>.</li>
-    <li>L’enfant répond à <strong>20 questions</strong>.</li>
-    <li>À chaque erreur, la <strong>bonne réponse</strong> s’affiche pour qu’il voie sa faute.</li>
-  </ul>
-  <p>
-    Quand vous êtes prêt, laissez l’enfant utiliser le <strong>mode enfant</strong> ci-dessous.
-  </p>
-</div>
-
-<!-- MODE ENFANT -->
-<div class="container" id="exerciseSection">
-  <h2>Mode enfant – Conjugaison</h2>
-  <p style="font-size:1.05rem;margin-top:0;">
-    Conjugue les verbes comme demandé. ✏️
-  </p>
-
-  <button id="startBtn">Commencer l’exercice (20 questions)</button>
-
-  <div id="exerciseContent" style="display:none; margin-top:10px;">
-    <div class="info-bar">
-      <span>Question : <span id="questionIndex">0</span> / <span id="questionTotal">0</span></span>
-      <span>Score : <span id="score">0</span></span>
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-icon">✏️</div>
+      <div>
+        <div class="header-title">Conjugaison</div>
+        <div class="header-sub">Conjugue les verbes préparés par ton parent (temps mélangés).</div>
+      </div>
     </div>
-
-    <div class="progress">
-      <div class="progress-inner" id="progressInner"></div>
+    <div class="header-right">
+      <div class="stars-pill">
+        ⭐ <span class="num" id="starCount">0</span>
+      </div>
+      <a href="boutique.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⭐</span>
+          <span>Boutique</span>
+        </button>
+      </a>
+      <a href="enfant_index.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⟵</span>
+          <span>Accueil enfant</span>
+        </button>
+      </a>
     </div>
-
-    <p id="questionText" style="font-size:1.2rem;font-weight:bold;margin-top:8px;">
-      Les questions apparaîtront ici.
-    </p>
-    <p id="questionHelp"><small>Écris ta réponse dans la zone ci-dessous.</small></p>
-
-    <input type="text" id="childAnswer" placeholder="Ta réponse">
-    <button id="validateBtn">Valider</button>
-
-    <p id="feedback"></p>
   </div>
-</div>
+</header>
 
-<!-- RESULTATS -->
-<div class="container" id="result" style="display:none;">
-  <h2>Résultat</h2>
-  <p id="finalScore"></p>
-  <p><strong>Formes à retravailler :</strong></p>
-  <ul id="mistakes"></ul>
-  <button onclick="restart()">Recommencer</button>
-</div>
+<main>
+  <div class="page">
+
+    <section class="hero">
+      <div class="hero-text">
+        <strong>Mission conjugaison</strong><br>
+        Lis la consigne, écris la forme correcte (pronom + verbe), puis clique sur <strong>“Valider”</strong>.
+      </div>
+      <div class="hero-badge">
+        <span>🎯</span>
+        <span>Temps mélangés</span>
+      </div>
+    </section>
+
+    <section class="card" id="exerciseSection">
+      <h2><span class="icon">🧠</span> Exercice</h2>
+      <p id="noConfigMessage" class="warning" style="display:none;">
+        Aucun exercice n’est prêt pour l’instant. Demande à ton parent de préparer une séance dans l’Espace Parent.
+      </p>
+
+      <div id="exerciseContent" style="display:none;">
+        <div class="info-bar">
+          <div class="info-pill">
+            <span class="dot"></span>
+            <span>Question <span id="questionIndex">0</span> / <span id="questionTotal">0</span></span>
+          </div>
+          <div class="info-pill">
+            <span class="dot" style="background: var(--accent-alt);"></span>
+            <span>Score : <span id="score">0</span></span>
+          </div>
+        </div>
+
+        <div class="progress">
+          <div class="progress-inner" id="progressInner"></div>
+        </div>
+
+        <p id="instruction">
+          Conjugue le verbe demandé au temps indiqué, en écrivant <strong>toute la forme</strong> (pronom + verbe).
+        </p>
+        <p id="currentQuestion"></p>
+
+        <input type="text" id="answerInput" autocomplete="off" spellcheck="false"
+               placeholder="Écris ici la forme conjuguée…" />
+        <button class="btn-main" id="btnValidate" type="button">Valider</button>
+
+        <p id="feedback"></p>
+      </div>
+    </section>
+
+    <section class="card" id="result">
+      <h2><span class="icon">📊</span> Résultat de ta séance</h2>
+      <p id="finalScore"></p>
+      <p id="starsGain"></p>
+      <ul id="mistakes"></ul>
+      <button class="btn-main" id="btnRestart" type="button">Recommencer la séance</button>
+    </section>
+
+  </div>
+</main>
 
 <script>
-// ===================== DONNÉES & CONJUGAISONS =====================
+  const CONJ_CONFIG_KEY = "conjConfig_v1";
+  const CONJ_RESULTS_KEY = "conjResults_v1";
 
-var TOTAL_QUESTIONS = 20;
+  const STARS_KEY = "stars_v1";
+  const THEMES_OWNED_KEY = "themes_owned_v1";
+  const THEME_ACTIVE_KEY = "theme_active_v1";
 
-var PRONOUNS = ["je","tu","il","elle","on","nous","vous","ils","elles"];
+  const pronouns = ["je", "tu", "il / elle", "nous", "vous", "ils / elles"];
+  const pronounShort = ["je", "tu", "il", "nous", "vous", "ils"];
 
-var TENSES = [
-  { key: "present", label: "Présent" },
-  { key: "imparfait", label: "Imparfait" },
-  { key: "futur", label: "Futur simple" },
-  { key: "passeCompose", label: "Passé composé" },
-  { key: "imperatif", label: "Impératif" }
-];
+  const verbsPool = [
+    "parler", "aimer", "regarder", "jouer", "chanter", "manger", "travailler", "habiter",
+    "finir", "choisir", "grandir", "réussir",
+    "vendre", "attendre", "répondre",
+    "être", "avoir", "aller", "faire", "venir", "prendre", "voir", "pouvoir", "vouloir"
+  ];
 
-// Liste courte de verbes fréquents
-var VERBS = [
-  {
-    infinitif: "être",
-    conjugations: {
-      present: {
-        je: "je suis",
-        tu: "tu es",
-        il: "il est",
-        elle: "elle est",
-        on: "on est",
-        nous: "nous sommes",
-        vous: "vous êtes",
-        ils: "ils sont",
-        elles: "elles sont"
-      },
-      imparfait: {
-        je: "j'étais",
-        tu: "tu étais",
-        il: "il était",
-        elle: "elle était",
-        on: "on était",
-        nous: "nous étions",
-        vous: "vous étiez",
-        ils: "ils étaient",
-        elles: "elles étaient"
-      },
-      futur: {
-        je: "je serai",
-        tu: "tu seras",
-        il: "il sera",
-        elle: "elle sera",
-        on: "on sera",
-        nous: "nous serons",
-        vous: "vous serez",
-        ils: "ils seront",
-        elles: "elles seront"
-      },
-      passeCompose: {
-        je: "j'ai été",
-        tu: "tu as été",
-        il: "il a été",
-        elle: "elle a été",
-        on: "on a été",
-        nous: "nous avons été",
-        vous: "vous avez été",
-        ils: "ils ont été",
-        elles: "elles ont été"
-      },
-      imperatif: {
-        tu: "sois",
-        nous: "soyons",
-        vous: "soyez"
-      }
+  const irregularVerbs = {
+    "être": {
+      present: ["suis","es","est","sommes","êtes","sont"],
+      imparfait: ["étais","étais","était","étions","étiez","étaient"],
+      futur: ["serai","seras","sera","serons","serez","seront"],
+      pp: "été",
+      aux: "avoir"
+    },
+    "avoir": {
+      present: ["ai","as","a","avons","avez","ont"],
+      imparfait: ["avais","avais","avait","avions","aviez","avaient"],
+      futur: ["aurai","auras","aura","aurons","aurez","auront"],
+      pp: "eu",
+      aux: "avoir"
+    },
+    "aller": {
+      present: ["vais","vas","va","allons","allez","vont"],
+      imparfait: ["allais","allais","allait","allions","alliez","allaient"],
+      futur: ["irai","iras","ira","irons","irez","iront"],
+      pp: "allé",
+      aux: "etre"
+    },
+    "faire": {
+      present: ["fais","fais","fait","faisons","faites","font"],
+      imparfait: ["faisais","faisais","faisait","faisions","faisiez","faisaient"],
+      futur: ["ferai","feras","fera","ferons","ferez","feront"],
+      pp: "fait",
+      aux: "avoir"
+    },
+    "venir": {
+      present: ["viens","viens","vient","venons","venez","viennent"],
+      imparfait: ["venais","venais","venait","venions","veniez","venaient"],
+      futur: ["viendrai","viendras","viendra","viendrons","viendrez","viendront"],
+      pp: "venu",
+      aux: "etre"
+    },
+    "prendre": {
+      present: ["prends","prends","prend","prenons","prenez","prennent"],
+      imparfait: ["prenais","prenais","prenait","prenions","preniez","prenaient"],
+      futur: ["prendrai","prendras","prendra","prendrons","prendrez","prendront"],
+      pp: "pris",
+      aux: "avoir"
+    },
+    "voir": {
+      present: ["vois","vois","voit","voyons","voyez","voient"],
+      imparfait: ["voyais","voyais","voyait","voyions","voyiez","voyaient"],
+      futur: ["verrai","verras","verra","verrons","verrez","verront"],
+      pp: "vu",
+      aux: "avoir"
+    },
+    "pouvoir": {
+      present: ["peux","peux","peut","pouvons","pouvez","peuvent"],
+      imparfait: ["pouvais","pouvais","pouvait","pouvions","pouviez","pouvaient"],
+      futur: ["pourrai","pourras","pourra","pourrons","pourrez","pourront"],
+      pp: "pu",
+      aux: "avoir"
+    },
+    "vouloir": {
+      present: ["veux","veux","veut","voulons","voulez","veulent"],
+      imparfait: ["voulais","voulais","voulait","voulions","vouliez","voulaient"],
+      futur: ["voudrai","voudras","voudra","voudrons","voudrez","voudront"],
+      pp: "voulu",
+      aux: "avoir"
     }
-  },
-  {
-    infinitif: "avoir",
-    conjugations: {
-      present: {
-        je: "j'ai",
-        tu: "tu as",
-        il: "il a",
-        elle: "elle a",
-        on: "on a",
-        nous: "nous avons",
-        vous: "vous avez",
-        ils: "ils ont",
-        elles: "elles ont"
-      },
-      imparfait: {
-        je: "j'avais",
-        tu: "tu avais",
-        il: "il avait",
-        elle: "elle avait",
-        on: "on avait",
-        nous: "nous avions",
-        vous: "vous aviez",
-        ils: "ils avaient",
-        elles: "elles avaient"
-      },
-      futur: {
-        je: "j'aurai",
-        tu: "tu auras",
-        il: "il aura",
-        elle: "elle aura",
-        on: "on aura",
-        nous: "nous aurons",
-        vous: "vous aurez",
-        ils: "ils auront",
-        elles: "elles auront"
-      },
-      passeCompose: {
-        je: "j'ai eu",
-        tu: "tu as eu",
-        il: "il a eu",
-        elle: "elle a eu",
-        on: "on a eu",
-        nous: "nous avons eu",
-        vous: "vous avez eu",
-        ils: "ils ont eu",
-        elles: "elles ont eu"
-      },
-      imperatif: {
-        tu: "aie",
-        nous: "ayons",
-        vous: "ayez"
-      }
+  };
+
+  const presentAvoir = ["ai","as","a","avons","avez","ont"];
+  const presentEtre  = ["suis","es","est","sommes","êtes","sont"];
+
+  const THEMES = {
+    default: {
+      "--bg-main": "#e0f2fe",
+      "--bg-gradient-1": "#eef2ff",
+      "--bg-gradient-2": "#e0f2fe",
+      "--card-light": "#ffffff",
+      "--card-soft": "#f8fafc",
+      "--accent": "#fb923c",
+      "--accent-strong": "#ea580c",
+      "--accent-soft": "#fed7aa",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#3b82f6",
+      "--text-main": "#0f172a",
+      "--text-muted": "#64748b"
+    },
+    arc_en_ciel: {
+      "--bg-main": "#ffeef7",
+      "--bg-gradient-1": "#fee2e2",
+      "--bg-gradient-2": "#fef9c3",
+      "--accent": "#ec4899",
+      "--accent-strong": "#db2777",
+      "--accent-soft": "#f9a8d4",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#6366f1"
+    },
+    foret_magique: {
+      "--bg-main": "#dcfce7",
+      "--bg-gradient-1": "#bbf7d0",
+      "--bg-gradient-2": "#fefce8",
+      "--accent": "#22c55e",
+      "--accent-strong": "#15803d",
+      "--accent-soft": "#bbf7d0",
+      "--accent-alt": "#16a34a",
+      "--accent-blue": "#0ea5e9"
+    },
+    glacier_bleu: {
+      "--bg-main": "#e0f2fe",
+      "--bg-gradient-1": "#dbeafe",
+      "--bg-gradient-2": "#f5f3ff",
+      "--accent": "#0ea5e9",
+      "--accent-strong": "#0369a1",
+      "--accent-soft": "#bae6fd",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#2563eb"
+    },
+    galaxie: {
+      "--bg-main": "#020617",
+      "--bg-gradient-1": "#1e293b",
+      "--bg-gradient-2": "#020617",
+      "--card-light": "#0b1220",
+      "--card-soft": "#020617",
+      "--accent": "#6366f1",
+      "--accent-strong": "#4f46e5",
+      "--accent-soft": "#a5b4fc",
+      "--accent-alt": "#facc15",
+      "--accent-blue": "#4f46e5",
+      "--text-main": "#e5e7eb",
+      "--text-muted": "#9ca3af"
+    },
+    studio_savoirs: {
+      "--bg-main": "#e5e7eb",
+      "--bg-gradient-1": "#f5f3ff",
+      "--bg-gradient-2": "#fef9c3",
+      "--card-light": "#f9fafb",
+      "--card-soft": "#f3f4f6",
+      "--accent": "#f97316",
+      "--accent-strong": "#ea580c",
+      "--accent-soft": "#fed7aa",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#3b82f6",
+      "--text-main": "#111827",
+      "--text-muted": "#6b7280"
     }
-  },
-  {
-    infinitif: "aller",
-    conjugations: {
-      present: {
-        je: "je vais",
-        tu: "tu vas",
-        il: "il va",
-        elle: "elle va",
-        on: "on va",
-        nous: "nous allons",
-        vous: "vous allez",
-        ils: "ils vont",
-        elles: "elles vont"
-      },
-      imparfait: {
-        je: "j'allais",
-        tu: "tu allais",
-        il: "il allait",
-        elle: "elle allait",
-        on: "on allait",
-        nous: "nous allions",
-        vous: "vous alliez",
-        ils: "ils allaient",
-        elles: "elles allaient"
-      },
-      futur: {
-        je: "j'irai",
-        tu: "tu iras",
-        il: "il ira",
-        elle: "elle ira",
-        on: "on ira",
-        nous: "nous irons",
-        vous: "vous irez",
-        ils: "ils iront",
-        elles: "elles iront"
-      },
-      // on laisse aller sans passé composé ici pour éviter la gestion des accords
-      imperatif: {
-        tu: "va",
-        nous: "allons",
-        vous: "allez"
-      }
+  };
+
+  let questions = [];
+  let currentIndex = 0;
+  let score = 0;
+  let mistakes = [];
+
+  const noConfigMessage = document.getElementById("noConfigMessage");
+  const exerciseContent = document.getElementById("exerciseContent");
+  const questionIndexSpan = document.getElementById("questionIndex");
+  const questionTotalSpan = document.getElementById("questionTotal");
+  const scoreSpan = document.getElementById("score");
+  const progressInner = document.getElementById("progressInner");
+  const answerInput = document.getElementById("answerInput");
+  const feedback = document.getElementById("feedback");
+  const btnValidate = document.getElementById("btnValidate");
+  const resultSection = document.getElementById("result");
+  const finalScoreSpan = document.getElementById("finalScore");
+  const starsGainP = document.getElementById("starsGain");
+  const mistakesList = document.getElementById("mistakes");
+  const currentQuestionEl = document.getElementById("currentQuestion");
+  const btnRestart = document.getElementById("btnRestart");
+
+  function getStars() {
+    const v = parseInt(localStorage.getItem(STARS_KEY) || "0", 10);
+    return isNaN(v) ? 0 : v;
+  }
+
+  function setStars(v) {
+    const value = Math.max(0, v);
+    localStorage.setItem(STARS_KEY, String(value));
+    updateStarDisplay();
+  }
+
+  function addStars(n) {
+    const current = getStars();
+    setStars(current + n);
+    return n;
+  }
+
+  function updateStarDisplay() {
+    const el = document.getElementById("starCount");
+    if (el) el.textContent = getStars();
+  }
+
+  function ensureThemeDefaults() {
+    const raw = localStorage.getItem(THEMES_OWNED_KEY);
+    if (!raw) {
+      localStorage.setItem(THEMES_OWNED_KEY, JSON.stringify(["default"]));
     }
-  },
-  {
-    infinitif: "faire",
-    conjugations: {
-      present: {
-        je: "je fais",
-        tu: "tu fais",
-        il: "il fait",
-        elle: "elle fait",
-        on: "on fait",
-        nous: "nous faisons",
-        vous: "vous faites",
-        ils: "ils font",
-        elles: "elles font"
-      },
-      imparfait: {
-        je: "je faisais",
-        tu: "tu faisais",
-        il: "il faisait",
-        elle: "elle faisait",
-        on: "on faisait",
-        nous: "nous faisions",
-        vous: "vous faisiez",
-        ils: "ils faisaient",
-        elles: "elles faisaient"
-      },
-      futur: {
-        je: "je ferai",
-        tu: "tu feras",
-        il: "il fera",
-        elle: "elle fera",
-        on: "on fera",
-        nous: "nous ferons",
-        vous: "vous ferez",
-        ils: "ils feront",
-        elles: "elles feront"
-      },
-      passeCompose: {
-        je: "j'ai fait",
-        tu: "tu as fait",
-        il: "il a fait",
-        elle: "elle a fait",
-        on: "on a fait",
-        nous: "nous avons fait",
-        vous: "vous avez fait",
-        ils: "ils ont fait",
-        elles: "elles ont fait"
-      },
-      imperatif: {
-        tu: "fais",
-        nous: "faisons",
-        vous: "faites"
-      }
-    }
-  },
-  {
-    infinitif: "parler",
-    conjugations: {
-      present: {
-        je: "je parle",
-        tu: "tu parles",
-        il: "il parle",
-        elle: "elle parle",
-        on: "on parle",
-        nous: "nous parlons",
-        vous: "vous parlez",
-        ils: "ils parlent",
-        elles: "elles parlent"
-      },
-      imparfait: {
-        je: "je parlais",
-        tu: "tu parlais",
-        il: "il parlait",
-        elle: "elle parlait",
-        on: "on parlait",
-        nous: "nous parlions",
-        vous: "vous parliez",
-        ils: "ils parlaient",
-        elles: "elles parlaient"
-      },
-      futur: {
-        je: "je parlerai",
-        tu: "tu parleras",
-        il: "il parlera",
-        elle: "elle parlera",
-        on: "on parlera",
-        nous: "nous parlerons",
-        vous: "vous parlerez",
-        ils: "ils parleront",
-        elles: "elles parleront"
-      },
-      passeCompose: {
-        je: "j'ai parlé",
-        tu: "tu as parlé",
-        il: "il a parlé",
-        elle: "elle a parlé",
-        on: "on a parlé",
-        nous: "nous avons parlé",
-        vous: "vous avez parlé",
-        ils: "ils ont parlé",
-        elles: "elles ont parlé"
-      },
-      imperatif: {
-        tu: "parle",
-        nous: "parlons",
-        vous: "parlez"
-      }
-    }
-  },
-  {
-    infinitif: "finir",
-    conjugations: {
-      present: {
-        je: "je finis",
-        tu: "tu finis",
-        il: "il finit",
-        elle: "elle finit",
-        on: "on finit",
-        nous: "nous finissons",
-        vous: "vous finissez",
-        ils: "ils finissent",
-        elles: "elles finissent"
-      },
-      imparfait: {
-        je: "je finissais",
-        tu: "tu finissais",
-        il: "il finissait",
-        elle: "elle finissait",
-        on: "on finissait",
-        nous: "nous finissions",
-        vous: "vous finissiez",
-        ils: "ils finissaient",
-        elles: "elles finissaient"
-      },
-      futur: {
-        je: "je finirai",
-        tu: "tu finiras",
-        il: "il finira",
-        elle: "elle finira",
-        on: "on finira",
-        nous: "nous finirons",
-        vous: "vous finirez",
-        ils: "ils finiront",
-        elles: "elles finiront"
-      },
-      passeCompose: {
-        je: "j'ai fini",
-        tu: "tu as fini",
-        il: "il a fini",
-        elle: "elle a fini",
-        on: "on a fini",
-        nous: "nous avons fini",
-        vous: "vous avez fini",
-        ils: "ils ont fini",
-        elles: "elles ont fini"
-      },
-      imperatif: {
-        tu: "finis",
-        nous: "finissons",
-        vous: "finissez"
-      }
-    }
-  },
-  {
-    infinitif: "prendre",
-    conjugations: {
-      present: {
-        je: "je prends",
-        tu: "tu prends",
-        il: "il prend",
-        elle: "elle prend",
-        on: "on prend",
-        nous: "nous prenons",
-        vous: "vous prenez",
-        ils: "ils prennent",
-        elles: "elles prennent"
-      },
-      imparfait: {
-        je: "je prenais",
-        tu: "tu prenais",
-        il: "il prenait",
-        elle: "elle prenait",
-        on: "on prenait",
-        nous: "nous prenions",
-        vous: "vous preniez",
-        ils: "ils prenaient",
-        elles: "elles prenaient"
-      },
-      futur: {
-        je: "je prendrai",
-        tu: "tu prendras",
-        il: "il prendra",
-        elle: "elle prendra",
-        on: "on prendra",
-        nous: "nous prendrons",
-        vous: "vous prendrez",
-        ils: "ils prendront",
-        elles: "elles prendront"
-      },
-      passeCompose: {
-        je: "j'ai pris",
-        tu: "tu as pris",
-        il: "il a pris",
-        elle: "elle a pris",
-        on: "on a pris",
-        nous: "nous avons pris",
-        vous: "vous avez pris",
-        ils: "ils ont pris",
-        elles: "elles ont pris"
-      },
-      imperatif: {
-        tu: "prends",
-        nous: "prenons",
-        vous: "prenez"
-      }
-    }
-  },
-  {
-    infinitif: "venir",
-    conjugations: {
-      present: {
-        je: "je viens",
-        tu: "tu viens",
-        il: "il vient",
-        elle: "elle vient",
-        on: "on vient",
-        nous: "nous venons",
-        vous: "vous venez",
-        ils: "ils viennent",
-        elles: "elles viennent"
-      },
-      imparfait: {
-        je: "je venais",
-        tu: "tu venais",
-        il: "il venait",
-        elle: "elle venait",
-        on: "on venait",
-        nous: "nous venions",
-        vous: "vous veniez",
-        ils: "ils venaient",
-        elles: "elles venaient"
-      },
-      futur: {
-        je: "je viendrai",
-        tu: "tu viendras",
-        il: "il viendra",
-        elle: "elle viendra",
-        on: "on viendra",
-        nous: "nous viendrons",
-        vous: "vous viendrez",
-        ils: "ils viendront",
-        elles: "elles viendront"
-      },
-      // on laisse sans passé composé pour éviter gestion des accords
-      imperatif: {
-        tu: "viens",
-        nous: "venons",
-        vous: "venez"
-      }
+    if (!localStorage.getItem(THEME_ACTIVE_KEY)) {
+      localStorage.setItem(THEME_ACTIVE_KEY, "default");
     }
   }
-];
 
-// ===================== ÉTAT DE L'EXERCICE =====================
-
-var questions = [];
-var currentIndex = 0;
-var score = 0;
-var mistakesList = [];
-
-// ===================== UTILITAIRES =====================
-
-function randChoice(arr) {
-  var idx = Math.floor(Math.random() * arr.length);
-  return arr[idx];
-}
-
-function shuffleArray(arr) {
-  var i, j, tmp;
-  for (i = arr.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1));
-    tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-  }
-  return arr;
-}
-
-function normalize(str) {
-  return str
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-// ===================== GÉNÉRATION DES QUESTIONS =====================
-
-function buildQuestions() {
-  questions = [];
-  currentIndex = 0;
-  score = 0;
-  mistakesList = [];
-
-  var usedKeys = {}; // pour limiter les doublons
-
-  var essaisMax = 200;
-  var essais = 0;
-
-  while (questions.length < TOTAL_QUESTIONS && essais < essaisMax) {
-    essais++;
-
-    var tense = randChoice(TENSES);
-    var verbsForTense = [];
-    var i;
-
-    // on ne garde que les verbes qui ont ce temps
-    for (i = 0; i < VERBS.length; i++) {
-      if (VERBS[i].conjugations[tense.key]) {
-        verbsForTense.push(VERBS[i]);
-      }
-    }
-    if (verbsForTense.length === 0) continue;
-
-    var verb = randChoice(verbsForTense);
-
-    var pronounsList;
-    if (tense.key === "imperatif") {
-      // à l'impératif, on utilise seulement tu/nous/vous
-      pronounsList = ["tu","nous","vous"];
-    } else {
-      pronounsList = PRONOUNS.slice();
-    }
-
-    // on garde seulement les pronoms qui existent dans la conj
-    var validPronouns = [];
-    for (i = 0; i < pronounsList.length; i++) {
-      var p = pronounsList[i];
-      if (verb.conjugations[tense.key][p]) {
-        validPronouns.push(p);
-      }
-    }
-    if (validPronouns.length === 0) continue;
-
-    var pronoun = randChoice(validPronouns);
-    var expected = verb.conjugations[tense.key][pronoun];
-
-    var key = tense.key + "|" + verb.infinitif + "|" + pronoun;
-    if (usedKeys[key]) continue;
-    usedKeys[key] = true;
-
-    var questionText;
-    var helpText;
-
-    if (tense.key === "imperatif") {
-      // pour l'impératif on peut afficher la personne entre parenthèses
-      questionText =
-        "Conjugue à l'impératif le verbe « " +
-        verb.infinitif +
-        " » avec « " +
-        pronoun +
-        " ».";
-      helpText = "Écris la forme du verbe (par exemple : « " + expected + " »).";
-    } else {
-      questionText =
-        "Conjugue au " +
-        tense.label.toLowerCase() +
-        " le verbe « " +
-        verb.infinitif +
-        " » avec « " +
-        pronoun +
-        " ».";
-      helpText =
-        "Écris la phrase complète avec le pronom et le verbe (par exemple : « " +
-        expected +
-        " »).";
-    }
-
-    questions.push({
-      tenseKey: tense.key,
-      tenseLabel: tense.label,
-      verb: verb.infinitif,
-      pronoun: pronoun,
-      expected: expected,
-      questionText: questionText,
-      helpText: helpText
+  function applyThemeFromStorage() {
+    let active = localStorage.getItem(THEME_ACTIVE_KEY) || "default";
+    const theme = THEMES[active] || THEMES.default;
+    const root = document.documentElement;
+    Object.entries(theme).forEach(([k, v]) => {
+      root.style.setProperty(k, v);
     });
   }
 
-  shuffleArray(questions);
-}
-
-// ===================== AFFICHAGE & LOGIQUE =====================
-
-function updateProgress() {
-  var total = questions.length;
-  var idx = currentIndex;
-  if (idx > total) idx = total;
-  document.getElementById("questionIndex").textContent = String(
-    idx < 1 ? 0 : idx
-  );
-  document.getElementById("questionTotal").textContent = String(total);
-
-  var percent = total > 0 ? ((idx - 1) / total) * 100 : 0;
-  document.getElementById("progressInner").style.width = percent + "%";
-}
-
-function showCurrentQuestion() {
-  var feedbackEl = document.getElementById("feedback");
-  feedbackEl.textContent = "";
-
-  if (currentIndex >= questions.length) {
-    endExercise();
-    return;
+  function getTenseLabel(code) {
+    switch (code) {
+      case "present": return "présent de l’indicatif";
+      case "imparfait": return "imparfait de l’indicatif";
+      case "passe_compose": return "passé composé de l’indicatif";
+      case "futur": return "futur simple de l’indicatif";
+      default: return code;
+    }
   }
 
-  var q = questions[currentIndex];
-
-  document.getElementById("questionText").textContent = q.questionText;
-  document.getElementById("questionHelp").innerHTML =
-    "<small>" + q.helpText + "</small>";
-  document.getElementById("childAnswer").value = "";
-  document.getElementById("childAnswer").focus();
-
-  document.getElementById("questionIndex").textContent = String(
-    currentIndex + 1
-  );
-  document.getElementById("questionTotal").textContent = String(
-    questions.length
-  );
-
-  var percent =
-    questions.length > 0 ? (currentIndex / questions.length) * 100 : 0;
-  document.getElementById("progressInner").style.width = percent + "%";
-}
-
-function checkAnswer() {
-  if (currentIndex >= questions.length) return;
-
-  var q = questions[currentIndex];
-  var input = document.getElementById("childAnswer");
-  var val = input.value;
-  var feedbackEl = document.getElementById("feedback");
-
-  if (val.trim() === "") {
-    feedbackEl.textContent =
-      "Écris une réponse avant de valider 🙂";
-    return;
+  function loadConjConfig() {
+    const saved = localStorage.getItem(CONJ_CONFIG_KEY);
+    if (!saved) return null;
+    try { return JSON.parse(saved); } catch (e) { return null; }
   }
 
-  var userNorm = normalize(val);
-  var expectedNorm = normalize(q.expected);
-
-  if (userNorm === expectedNorm) {
-    feedbackEl.textContent = "Correct ! ✅";
-    score++;
-    document.getElementById("score").textContent = String(score);
-  } else {
-    feedbackEl.textContent =
-      "Non, la bonne réponse était : « " + q.expected + " »";
-    mistakesList.push({
-      question: q.questionText,
-      expected: q.expected,
-      child: val
-    });
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
   }
 
-  currentIndex++;
-  setTimeout(showCurrentQuestion, 1500);
-}
+  function buildRandomQuestions(cfg) {
+    const tenses = (cfg && Array.isArray(cfg.tenses) && cfg.tenses.length)
+      ? cfg.tenses
+      : ["present"];
+    const persons = (cfg && Array.isArray(cfg.persons) && cfg.persons.length)
+      ? cfg.persons
+      : [0,1,2,3,4,5];
+    const count = (cfg && typeof cfg.questionCount === "number")
+      ? cfg.questionCount
+      : 10;
 
-function endExercise() {
-  document.getElementById("exerciseSection").style.display = "none";
-  document.getElementById("result").style.display = "block";
-
-  var total = questions.length;
-  var txt = "Score : " + score + " / " + total;
-  document.getElementById("finalScore").textContent = txt;
-
-  var ul = document.getElementById("mistakes");
-  ul.innerHTML = "";
-  var i;
-  for (i = 0; i < mistakesList.length; i++) {
-    var m = mistakesList[i];
-    var li = document.createElement("li");
-    li.textContent =
-      m.question +
-      " → réponse attendue : \"" +
-      m.expected +
-      "\" (ta réponse : \"" +
-      m.child +
-      "\")";
-    ul.appendChild(li);
+    const qs = [];
+    for (let i = 0; i < count; i++) {
+      const verb = verbsPool[Math.floor(Math.random() * verbsPool.length)];
+      const tense = tenses[Math.floor(Math.random() * tenses.length)];
+      const personIndex = persons[Math.floor(Math.random() * persons.length)];
+      qs.push({ verb, tense, personIndex });
+    }
+    return qs;
   }
 
-  document.getElementById("progressInner").style.width = "100%";
-}
+  function conjugateRegular(verb, tense, personIndex) {
+    const infinitive = verb.toLowerCase();
+    const endsWith = (suffix) => infinitive.endsWith(suffix);
+    let group = "er";
+    if (endsWith("ir")) group = "ir";
+    if (endsWith("re")) group = "re";
+    if (!endsWith("er") && !endsWith("ir") && !endsWith("re")) group = "other";
 
-function restart() {
-  // on revient au mode enfant, prêt à recommencer
-  document.getElementById("result").style.display = "none";
-  document.getElementById("exerciseSection").style.display = "block";
-  document.getElementById("exerciseContent").style.display = "none";
-  document.getElementById("score").textContent = "0";
-  document.getElementById("questionIndex").textContent = "0";
-  document.getElementById("questionTotal").textContent = "0";
-  document.getElementById("progressInner").style.width = "0%";
-}
-
-// ===================== INIT =====================
-
-function startExercise() {
-  buildQuestions();
-  score = 0;
-  currentIndex = 0;
-  document.getElementById("score").textContent = "0";
-  document.getElementById("exerciseContent").style.display = "block";
-  document.getElementById("result").style.display = "none";
-  showCurrentQuestion();
-}
-
-function init() {
-  var btnStart = document.getElementById("startBtn");
-  var btnValidate = document.getElementById("validateBtn");
-  var input = document.getElementById("childAnswer");
-
-  if (btnStart) {
-    btnStart.onclick = startExercise;
-  }
-  if (btnValidate) {
-    btnValidate.onclick = checkAnswer;
-  }
-  if (input) {
-    input.onkeydown = function(e) {
-      e = e || window.event;
-      if (e.key === "Enter" || e.keyCode === 13) {
-        checkAnswer();
+    if (tense === "present") {
+      if (group === "er") {
+        const stem = infinitive.slice(0, -2);
+        const endings = ["e","es","e","ons","ez","ent"];
+        let form = stem + endings[personIndex];
+        if (infinitive === "manger" && personIndex === 3) form = "mangeons";
+        return form;
+      } else if (group === "ir") {
+        const stem = infinitive.slice(0, -2);
+        const endings = ["is","is","it","issons","issez","issent"];
+        return stem + endings[personIndex];
+      } else if (group === "re") {
+        const stem = infinitive.slice(0, -2);
+        const endings = ["s","s","","ons","ez","ent"];
+        return stem + endings[personIndex];
+      } else {
+        const stem = infinitive.slice(0, -2);
+        const endings = ["e","es","e","ons","ez","ent"];
+        return stem + endings[personIndex];
       }
+    }
+
+    if (tense === "imparfait") {
+      let imparfaitStem = "";
+      if (group === "er" || group === "re") {
+        imparfaitStem = infinitive.slice(0, -2);
+      } else if (group === "ir") {
+        const stem = infinitive.slice(0, -2);
+        imparfaitStem = stem + "iss";
+      } else {
+        imparfaitStem = infinitive.slice(0, -2);
+      }
+      const endings = ["ais","ais","ait","ions","iez","aient"];
+      return imparfaitStem + endings[personIndex];
+    }
+
+    if (tense === "futur") {
+      let base = infinitive;
+      if (group === "re") {
+        base = infinitive.slice(0, -1);
+      }
+      const endings = ["ai","as","a","ons","ez","ont"];
+      return base + endings[personIndex];
+    }
+
+    if (tense === "pp") {
+      const stem = infinitive.slice(0, -2);
+      if (group === "er") return stem + "é";
+      if (group === "ir") return stem + "i";
+      if (group === "re") return stem + "u";
+      return infinitive;
+    }
+
+    return infinitive;
+  }
+
+  function buildExpectedForm(verb, tense, personIndex) {
+    const vLower = verb.toLowerCase();
+    const ir = irregularVerbs[vLower];
+    const pronoun = pronounShort[personIndex];
+
+    if (tense === "present" || tense === "imparfait" || tense === "futur") {
+      let verbForm;
+      if (ir) {
+        const key = (tense === "futur") ? "futur" : tense;
+        verbForm = ir[key][personIndex];
+      } else {
+        verbForm = conjugateRegular(vLower, tense, personIndex);
+      }
+
+      if (personIndex === 0) {
+        if (/^[aeiouyhâêîôûäëïöüéèêë]/i.test(verbForm)) {
+          return "j'" + verbForm;
+        }
+        return "je " + verbForm;
+      }
+      return pronoun + " " + verbForm;
+    }
+
+    if (tense === "passe_compose") {
+      let pp, auxType = "avoir";
+
+      if (ir) {
+        pp = ir.pp;
+        auxType = ir.aux || "avoir";
+      } else {
+        pp = conjugateRegular(vLower, "pp", personIndex);
+        auxType = "avoir";
+      }
+
+      const auxPresent = (auxType === "etre") ? presentEtre : presentAvoir;
+      let auxWord = auxPresent[personIndex];
+      let phrase;
+
+      if (personIndex === 0) {
+        if (/^[aeiouyhâêîôûäëïöüéèêë]/i.test(auxWord)) {
+          phrase = "j'" + auxWord + " " + pp;
+        } else {
+          phrase = "je " + auxWord + " " + pp;
+        }
+      } else {
+        phrase = pronoun + " " + auxWord + " " + pp;
+      }
+
+      return phrase;
+    }
+
+    return vLower;
+  }
+
+  function saveResults() {
+    const stored = localStorage.getItem(CONJ_RESULTS_KEY);
+    let list = [];
+    if (stored) {
+      try { list = JSON.parse(stored) || []; } catch (e) { list = []; }
+    }
+
+    const total = questions.length;
+    const result = {
+      date: new Date().toISOString(),
+      score: score,
+      total: total,
+      mistakes: mistakes
     };
-  }
-}
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
-}
+    list.push(result);
+    localStorage.setItem(CONJ_RESULTS_KEY, JSON.stringify(list));
+  }
+
+  function normalizeText(str) {
+    return str
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  function showCurrentQuestion() {
+    const q = questions[currentIndex];
+    const tenseLabel = getTenseLabel(q.tense);
+
+    questionIndexSpan.textContent = currentIndex + 1;
+    questionTotalSpan.textContent = questions.length;
+
+    const pLabel = pronouns[q.personIndex];
+    currentQuestionEl.textContent =
+      "Conjugue le verbe « " + q.verb + " » au " + tenseLabel +
+      " avec « " + pLabel + " ».";
+
+    const progress = (currentIndex / questions.length) * 100;
+    progressInner.style.width = progress + "%";
+
+    answerInput.value = "";
+    answerInput.focus();
+    feedback.textContent = "";
+  }
+
+  function validateAnswer() {
+    if (currentIndex >= questions.length) return;
+
+    const q = questions[currentIndex];
+    const userInput = answerInput.value;
+
+    if (!userInput.trim()) {
+      feedback.textContent = "Écris d’abord ta réponse 😉";
+      return;
+    }
+
+    const tenseLabel = getTenseLabel(q.tense);
+    const expected = buildExpectedForm(q.verb, q.tense, q.personIndex);
+
+    const normalizedExpected = normalizeText(expected);
+    const normalizedUser = normalizeText(userInput);
+
+    if (normalizedExpected === normalizedUser) {
+      score++;
+      scoreSpan.textContent = score;
+      feedback.textContent = "Bravo, c’est correct ! 🎉";
+    } else {
+      feedback.textContent = "Presque ! La bonne réponse était : « " + expected + " »";
+      mistakes.push({
+        verb: q.verb,
+        tense: q.tense,
+        tenseLabel: tenseLabel,
+        personIndex: q.personIndex,
+        personLabel: pronouns[q.personIndex],
+        expected: expected,
+        answer: userInput
+      });
+    }
+
+    currentIndex++;
+
+    if (currentIndex < questions.length) {
+      setTimeout(showCurrentQuestion, 2200);
+    } else {
+      finishExercise();
+    }
+  }
+
+  function finishExercise() {
+    progressInner.style.width = "100%";
+
+    exerciseContent.style.display = "none";
+    resultSection.style.display = "block";
+
+    const total = questions.length;
+    finalScoreSpan.textContent = "Tu as " + score + " bonne(s) réponse(s) sur " + total + ".";
+
+    mistakesList.innerHTML = "";
+    if (mistakes.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "Aucune erreur, super travail ! 🌟";
+      mistakesList.appendChild(li);
+    } else {
+      mistakes.forEach(m => {
+        const li = document.createElement("li");
+        li.textContent =
+          m.verb + " – " + m.tenseLabel + " – " + m.personLabel +
+          " : tu as écrit « " + m.answer + " » au lieu de « " + m.expected + " »";
+        mistakesList.appendChild(li);
+      });
+    }
+
+    saveResults();
+
+    // ⭐ Récompense : 3 étoiles + 2 si aucune erreur
+    let gained = 3;
+    if (mistakes.length === 0) {
+      gained += 2;
+    }
+    addStars(gained);
+    starsGainP.textContent = "Tu as gagné " + gained + " étoile(s) ⭐ pour la boutique !";
+  }
+
+  function initExercise() {
+    const cfg = loadConjConfig();
+    if (!cfg || !Array.isArray(cfg.tenses) || cfg.tenses.length === 0) {
+      noConfigMessage.style.display = "block";
+      exerciseContent.style.display = "none";
+      resultSection.style.display = "none";
+      return;
+    }
+
+    questions = buildRandomQuestions(cfg);
+    if (!questions.length) {
+      noConfigMessage.style.display = "block";
+      exerciseContent.style.display = "none";
+      resultSection.style.display = "none";
+      return;
+    }
+
+    currentIndex = 0;
+    score = 0;
+    mistakes = [];
+
+    noConfigMessage.style.display = "none";
+    exerciseContent.style.display = "block";
+    resultSection.style.display = "none";
+
+    scoreSpan.textContent = score;
+    showCurrentQuestion();
+  }
+
+  btnValidate.addEventListener("click", validateAnswer);
+  answerInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") validateAnswer();
+  });
+  btnRestart.addEventListener("click", () => {
+    initExercise();
+  });
+
+  function init() {
+    ensureThemeDefaults();
+    applyThemeFromStorage();
+    updateStarDisplay();
+    initExercise();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 </script>
 
 </body>
