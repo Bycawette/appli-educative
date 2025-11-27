@@ -1,191 +1,827 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Orthographe – Dictée</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  font-family: system-ui, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f6fb;
-  color: #222;
-}
-header {
-  background: #C04A4A;
-  color: #fff;
-  padding: 1rem 1.2rem;
-  text-align: center;
-  font-size: 1.4rem;
-  font-weight: bold;
-}
-.container {
-  max-width: 800px;
-  margin: 1rem auto;
-  background: #ffffff;
-  padding: 1.2rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-}
-textarea {
-  width: 100%;
-  height: 120px;
-  margin-top: 8px;
-  padding: 8px;
-}
-button {
-  background: #C04A4A;
-  color: #fff;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 8px;
-  font-size: 1rem;
-}
-button:hover { background: #9c3d3d; }
-input[type="text"] {
-  width: 100%;
-  padding: 8px;
-  margin-top: 8px;
-  font-size: 1rem;
-}
-#feedback { font-weight:bold; margin-top: 8px; }
-ul { padding-left: 20px; }
-</style>
+  <meta charset="UTF-8">
+  <title>Dictée – Orthographe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg-main: #e0f2fe;
+      --bg-gradient-1: #eef2ff;
+      --bg-gradient-2: #e0f2fe;
+
+      --card-light: #ffffff;
+      --card-soft: #f8fafc;
+
+      --accent: #fb923c;
+      --accent-strong: #ea580c;
+      --accent-soft: #fed7aa;
+      --accent-alt: #22c55e;
+      --accent-blue: #3b82f6;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --border-subtle: rgba(148, 163, 184, 0.6);
+
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+        radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #f9fafb;
+      padding: 0.8rem 1.4rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .header-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      background: #fef3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #b45309;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 650;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .stars-pill {
+      border-radius: var(--radius-pill);
+      padding: 0.2rem 0.7rem;
+      background: rgba(250, 204, 21, 0.2);
+      border: 1px solid rgba(250, 204, 21, 0.8);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #facc15;
+    }
+
+    .stars-pill span.num {
+      font-weight: 700;
+      color: #fefce8;
+    }
+
+    .btn-retour {
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-pill);
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.3), rgba(15, 23, 42, 1));
+      color: #e0f2fe;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-retour span.icon { font-size: 1rem; }
+
+    /* PAGE ENFANT */
+    main { flex: 1; }
+
+    .page {
+      max-width: 980px;
+      margin: 1.2rem auto 1.8rem;
+      padding: 0 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #fef3c7, #fee2e2);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.18);
+    }
+
+    .hero-text { font-size: 0.95rem; }
+
+    .hero-badge {
+      border-radius: var(--radius-pill);
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      padding: 0.4rem 0.7rem;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card {
+      background: var(--card-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.2rem;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card h2 .icon { font-size: 1.2rem; }
+
+    .info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .info-pill {
+      border-radius: var(--radius-pill);
+      background: #e0f2fe;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent-alt);
+    }
+
+    .progress {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 0.8rem;
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transition: width 0.25s ease-out;
+    }
+
+    #instruction {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+    }
+
+    #audioInfo {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    #currentWordHint {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    #answerInput {
+      width: 100%;
+      padding: 0.45rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    #answerInput:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 1px rgba(251,146,60,0.7);
+    }
+
+    .btn-main,
+    .btn-audio {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 0.45rem 1.1rem;
+      font-weight: 650;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-right: 0.4rem;
+    }
+
+    .btn-main {
+      background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+      color: #fefce8;
+    }
+
+    .btn-audio {
+      background: #e0f2fe;
+      color: #1d4ed8;
+      border: 1px solid rgba(148,163,184,0.7);
+    }
+
+    #feedback {
+      margin-top: 0.5rem;
+      font-weight: 600;
+      min-height: 1.2rem;
+    }
+
+    #result { display: none; }
+
+    #finalScore {
+      font-size: 1rem;
+      font-weight: 650;
+      margin-bottom: 0.4rem;
+    }
+
+    #mistakes {
+      padding-left: 1.1rem;
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+    }
+
+    #mistakes li { margin-bottom: 0.2rem; }
+
+    .warning {
+      font-size: 0.95rem;
+      color: #b91c1c;
+    }
+
+    .support-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>Orthographe – Dictée</header>
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-icon">📝</div>
+      <div>
+        <div class="header-title">Dictée – Orthographe</div>
+        <div class="header-sub">Écris les mots que la tablette / l’ordinateur te dicte.</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="stars-pill">
+        ⭐ <span class="num" id="starCount">0</span>
+      </div>
+      <a href="boutique.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⭐</span>
+          <span>Boutique</span>
+        </button>
+      </a>
+      <a href="enfant_index.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⟵</span>
+          <span>Accueil enfant</span>
+        </button>
+      </a>
+    </div>
+  </div>
+</header>
 
-<div style="margin:10px;">
-  <a href="index.html" style="display:inline-block;background:#C04A4A;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
-    ⟵ Retour à l'accueil
-  </a>
-</div>
+<main>
+  <div class="page">
 
-<!-- MODE PARENT -->
-<div class="container">
-  <h2>Mode parent – Encoder les mots</h2>
-  <p>Saisir <strong>un mot par ligne</strong> :</p>
-  <textarea id="wordList"></textarea>
-  <button onclick="saveWords()">Enregistrer la liste</button>
-  <p id="saveStatus" style="font-weight:bold;"></p>
-</div>
+    <section class="hero" id="heroSection">
+      <div class="hero-text">
+        <strong>Dictée autonome</strong><br>
+        Ton parent a préparé une liste de mots. Clique sur <strong>“Écouter le mot”</strong>,
+        écoute bien, puis écris-le correctement.
+      </div>
+      <div class="hero-badge">
+        <span>🔊</span>
+        <span>La tablette parle</span>
+      </div>
+    </section>
 
-<!-- MODE ENFANT -->
-<div class="container" id="exerciseSection" style="display:none;">
-  <h2>Mode enfant – Dictée</h2>
-  <p style="font-size:1.3rem;font-weight:bold;margin-top:0;">Écris le mot que tu entends</p>
+    <section class="card" id="exerciseSection">
+      <h2><span class="icon">🧠</span> Dictée</h2>
+      <p id="noConfigMessage" class="warning" style="display:none;">
+        Aucun exercice n’est prêt pour l’instant. Demande à ton parent de préparer une dictée dans l’Espace Parent.
+      </p>
 
-  <button onclick="speak(currentWord)">▶️ Écouter</button>
+      <p id="noSpeechSupport" class="warning" style="display:none;">
+        Ton navigateur ne permet pas encore de faire parler la tablette.<br>
+        Demande à ton parent de te lire les mots ou essaie avec un autre appareil (ordinateur, tablette, navigateur différent).
+      </p>
 
-  <input type="text" id="childAnswer" placeholder="Écris ici ton mot">
-  <button onclick="checkAnswer()">Valider</button>
+      <div id="exerciseContent" style="display:none;">
+        <div class="info-bar">
+          <div class="info-pill">
+            <span class="dot"></span>
+            <span>Mot <span id="wordIndex">0</span> / <span id="wordTotal">0</span></span>
+          </div>
+          <div class="info-pill">
+            <span class="dot" style="background: var(--accent-alt);"></span>
+            <span>Score : <span id="score">0</span></span>
+          </div>
+        </div>
 
-  <p id="feedback"></p>
-  <p>Score : <span id="score">0</span> / <span id="total">0</span></p>
-</div>
+        <div class="progress">
+          <div class="progress-inner" id="progressInner"></div>
+        </div>
 
-<!-- RESULTATS -->
-<div class="container" id="result" style="display:none;">
-  <h2>Résultat</h2>
-  <p id="finalScore"></p>
-  <p><strong>Mots à retravailler :</strong></p>
-  <ul id="mistakes"></ul>
-  <button onclick="restart()">Recommencer</button>
-</div>
+        <p id="instruction">
+          1. Clique sur <strong>“Écouter le mot”</strong>.<br>
+          2. Le mot est dit à voix haute.<br>
+          3. Écris-le ci-dessous puis clique sur <strong>“Valider”</strong>.
+        </p>
+        <p id="audioInfo">
+          Tu peux cliquer plusieurs fois sur “Écouter le mot” si tu veux le réentendre.
+        </p>
+        <p id="currentWordHint">
+          Mot numéro <span id="hintIndex">1</span>. Fais attention aux accents et aux doubles lettres.
+        </p>
+
+        <div style="margin-bottom: 0.6rem;">
+          <button class="btn-audio" id="btnSpeak">
+            <span>🔊</span>
+            <span>Écouter le mot</span>
+          </button>
+        </div>
+
+        <input type="text" id="answerInput" autocomplete="off" spellcheck="false" placeholder="Écris ici..." />
+        <button class="btn-main" id="btnValidate">
+          Valider
+        </button>
+
+        <p id="feedback"></p>
+        <p class="support-note">
+          Si tu n’entends rien, vérifie le son de ton appareil.
+        </p>
+      </div>
+    </section>
+
+    <section class="card" id="result">
+      <h2><span class="icon">📊</span> Résultat de ta dictée</h2>
+      <p id="finalScore"></p>
+      <p id="starsGain"></p>
+      <ul id="mistakes"></ul>
+      <button class="btn-main" id="btnRestart" type="button">Recommencer la dictée</button>
+    </section>
+
+  </div>
+</main>
 
 <script>
-// Synthèse vocale FR
-function speak(word) {
-  const msg = new SpeechSynthesisUtterance(word);
-  msg.lang = "fr-FR";
-  speechSynthesis.speak(msg);
-}
+  const ORTHO_CONFIG_KEY = "orthoConfig_v1";
+  const ORTHO_RESULTS_KEY = "orthoResults_v1";
 
-// Variables globales
-let words = [];
-let remaining = [];
-let currentWord = "";
-let total = 0;
-let score = 0;
-let mistakesList = [];
+  const STARS_KEY = "stars_v1";
+  const THEMES_OWNED_KEY = "themes_owned_v1";
+  const THEME_ACTIVE_KEY = "theme_active_v1";
 
-// Sauvegarde parent
-function saveWords() {
-  const list = document.getElementById("wordList").value.trim().split('\n').filter(w => w.trim() !== "");
-  if(list.length === 0) {
-    document.getElementById("saveStatus").textContent = "Aucun mot enregistré.";
-    return;
+  const THEMES = {
+    default: {
+      "--bg-main": "#e0f2fe",
+      "--bg-gradient-1": "#eef2ff",
+      "--bg-gradient-2": "#e0f2fe",
+      "--card-light": "#ffffff",
+      "--card-soft": "#f8fafc",
+      "--accent": "#fb923c",
+      "--accent-strong": "#ea580c",
+      "--accent-soft": "#fed7aa",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#3b82f6",
+      "--text-main": "#0f172a",
+      "--text-muted": "#64748b"
+    },
+    arc_en_ciel: {
+      "--bg-main": "#ffeef7",
+      "--bg-gradient-1": "#fee2e2",
+      "--bg-gradient-2": "#fef9c3",
+      "--accent": "#ec4899",
+      "--accent-strong": "#db2777",
+      "--accent-soft": "#f9a8d4",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#6366f1"
+    },
+    foret_magique: {
+      "--bg-main": "#dcfce7",
+      "--bg-gradient-1": "#bbf7d0",
+      "--bg-gradient-2": "#fefce8",
+      "--accent": "#22c55e",
+      "--accent-strong": "#15803d",
+      "--accent-soft": "#bbf7d0",
+      "--accent-alt": "#16a34a",
+      "--accent-blue": "#0ea5e9"
+    },
+    glacier_bleu: {
+      "--bg-main": "#e0f2fe",
+      "--bg-gradient-1": "#dbeafe",
+      "--bg-gradient-2": "#f5f3ff",
+      "--accent": "#0ea5e9",
+      "--accent-strong": "#0369a1",
+      "--accent-soft": "#bae6fd",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#2563eb"
+    },
+    galaxie: {
+      "--bg-main": "#020617",
+      "--bg-gradient-1": "#1e293b",
+      "--bg-gradient-2": "#020617",
+      "--card-light": "#0b1220",
+      "--card-soft": "#020617",
+      "--accent": "#6366f1",
+      "--accent-strong": "#4f46e5",
+      "--accent-soft": "#a5b4fc",
+      "--accent-alt": "#facc15",
+      "--accent-blue": "#4f46e5",
+      "--text-main": "#e5e7eb",
+      "--text-muted": "#9ca3af"
+    },
+    studio_savoirs: {
+      "--bg-main": "#e5e7eb",
+      "--bg-gradient-1": "#f5f3ff",
+      "--bg-gradient-2": "#fef9c3",
+      "--card-light": "#f9fafb",
+      "--card-soft": "#f3f4f6",
+      "--accent": "#f97316",
+      "--accent-strong": "#ea580c",
+      "--accent-soft": "#fed7aa",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#3b82f6",
+      "--text-main": "#111827",
+      "--text-muted": "#6b7280"
+    }
+  };
+
+  function getStars() {
+    const v = parseInt(localStorage.getItem(STARS_KEY) || "0", 10);
+    return isNaN(v) ? 0 : v;
   }
-  localStorage.setItem("ortholist", JSON.stringify(list));
-  document.getElementById("saveStatus").textContent = "Liste enregistrée !";
-  loadWords();
-}
 
-// Chargement des mots
-function loadWords() {
-  const saved = localStorage.getItem("ortholist");
-  if(saved) {
-    words = JSON.parse(saved);
-    remaining = [...words];
-    total = remaining.length;
-    document.getElementById("total").textContent = total;
-    document.getElementById("exerciseSection").style.display = "block";
-    newWord();
-  }
-}
-
-// Nouvelle dictée
-function newWord() {
-  currentWord = remaining[Math.floor(Math.random() * remaining.length)];
-  document.getElementById("childAnswer").value = "";
-  document.getElementById("feedback").textContent = "";
-}
-
-// Vérification
-function checkAnswer() {
-  const ans = document.getElementById("childAnswer").value.trim();
-  if(ans.toLowerCase() === currentWord.toLowerCase()) {
-    score++;
-    document.getElementById("score").textContent = score;
-    document.getElementById("feedback").textContent = "Correct !";
-    remaining = remaining.filter(w => w !== currentWord);
-  } else {
-    mistakesList.push(currentWord);
-    document.getElementById("feedback").textContent = "Incorrect.";
+  function setStars(v) {
+    const value = Math.max(0, v);
+    localStorage.setItem(STARS_KEY, String(value));
+    updateStarDisplay();
   }
 
-  if(remaining.length > 0) {
-    newWord();
-  } else {
-    end();
+  function addStars(n) {
+    const current = getStars();
+    setStars(current + n);
+    return n;
   }
-}
 
-// Fin
-function end() {
-  document.getElementById("exerciseSection").style.display = "none";
-  document.getElementById("result").style.display = "block";
-  document.getElementById("finalScore").textContent = "Score : " + score + " / " + total;
-  const ul = document.getElementById("mistakes");
-  mistakesList.forEach(m => {
-    const li = document.createElement("li");
-    li.textContent = m;
-    ul.appendChild(li);
+  function updateStarDisplay() {
+    const el = document.getElementById("starCount");
+    if (el) el.textContent = getStars();
+  }
+
+  function applyThemeFromStorage() {
+    let active = localStorage.getItem(THEME_ACTIVE_KEY) || "default";
+    const theme = THEMES[active] || THEMES.default;
+    const root = document.documentElement;
+    Object.entries(theme).forEach(([k, v]) => {
+      root.style.setProperty(k, v);
+    });
+  }
+
+  function ensureThemeDefaults() {
+    const raw = localStorage.getItem(THEMES_OWNED_KEY);
+    if (!raw) {
+      localStorage.setItem(THEMES_OWNED_KEY, JSON.stringify(["default"]));
+    }
+    if (!localStorage.getItem(THEME_ACTIVE_KEY)) {
+      localStorage.setItem(THEME_ACTIVE_KEY, "default");
+    }
+  }
+
+  // ORTHOGRAPHE LOGIQUE
+
+  let words = [];
+  let currentIndex = 0;
+  let score = 0;
+  let mistakes = [];
+
+  const noConfigMessage = document.getElementById("noConfigMessage");
+  const noSpeechSupport = document.getElementById("noSpeechSupport");
+  const exerciseContent = document.getElementById("exerciseContent");
+  const wordIndexSpan = document.getElementById("wordIndex");
+  const wordTotalSpan = document.getElementById("wordTotal");
+  const hintIndexSpan = document.getElementById("hintIndex");
+  const scoreSpan = document.getElementById("score");
+  const progressInner = document.getElementById("progressInner");
+  const answerInput = document.getElementById("answerInput");
+  const feedback = document.getElementById("feedback");
+  const btnValidate = document.getElementById("btnValidate");
+  const btnSpeak = document.getElementById("btnSpeak");
+
+  const resultSection = document.getElementById("result");
+  const finalScoreSpan = document.getElementById("finalScore");
+  const starsGainP = document.getElementById("starsGain");
+  const mistakesList = document.getElementById("mistakes");
+  const btnRestart = document.getElementById("btnRestart");
+
+  function loadOrthoConfig() {
+    const saved = localStorage.getItem(ORTHO_CONFIG_KEY);
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function getFrenchVoice() {
+    if (!("speechSynthesis" in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices || voices.length === 0) return null;
+
+    let frVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith("fr"));
+    const frFr = frVoices.filter(v => v.lang.toLowerCase().includes("fr-fr"));
+    if (frFr.length > 0) frVoices = frFr;
+
+    const preferred = frVoices.find(v =>
+      /google|français|francais/i.test(v.name)
+    );
+
+    return preferred || frVoices[0] || null;
+  }
+
+  function speak(text) {
+    if (!("speechSynthesis" in window)) {
+      return;
+    }
+
+    const synth = window.speechSynthesis;
+    synth.cancel();
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "fr-FR";
+    utter.rate = 0.8;
+    utter.pitch = 1;
+
+    const voice = getFrenchVoice();
+    if (voice) {
+      utter.voice = voice;
+    }
+
+    synth.speak(utter);
+  }
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.onvoiceschanged = function () {
+      window.speechSynthesis.getVoices();
+    };
+  }
+
+  function initExercise() {
+    const cfg = loadOrthoConfig();
+    if (!cfg || !Array.isArray(cfg.words) || cfg.words.length === 0) {
+      noConfigMessage.style.display = "block";
+      exerciseContent.style.display = "none";
+      resultSection.style.display = "none";
+      return;
+    }
+
+    if (!("speechSynthesis" in window)) {
+      noSpeechSupport.style.display = "block";
+    } else {
+      noSpeechSupport.style.display = "none";
+    }
+
+    words = cfg.words.slice();
+    if (cfg.shuffle) {
+      shuffleArray(words);
+    }
+
+    currentIndex = 0;
+    score = 0;
+    mistakes = [];
+
+    noConfigMessage.style.display = "none";
+    exerciseContent.style.display = "block";
+    resultSection.style.display = "none";
+
+    wordTotalSpan.textContent = words.length;
+    scoreSpan.textContent = score;
+    updateUIForCurrentWord();
+  }
+
+  function updateUIForCurrentWord() {
+    wordIndexSpan.textContent = currentIndex + 1;
+    hintIndexSpan.textContent = currentIndex + 1;
+
+    const progress = (currentIndex / words.length) * 100;
+    progressInner.style.width = progress + "%";
+
+    answerInput.value = "";
+    answerInput.focus();
+    feedback.textContent = "";
+  }
+
+  function normalizeText(str) {
+    return str
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, " ");
+  }
+
+  function saveResults() {
+    const total = words.length;
+    const stored = localStorage.getItem(ORTHO_RESULTS_KEY);
+    let list = [];
+    if (stored) {
+      try {
+        list = JSON.parse(stored) || [];
+      } catch (e) {
+        list = [];
+      }
+    }
+
+    const result = {
+      date: new Date().toISOString(),
+      score: score,
+      total: total,
+      mistakes: mistakes
+    };
+
+    list.push(result);
+    localStorage.setItem(ORTHO_RESULTS_KEY, JSON.stringify(list));
+  }
+
+  function validateAnswer() {
+    if (currentIndex >= words.length) return;
+
+    const expected = words[currentIndex];
+    const userInput = answerInput.value;
+
+    if (!userInput.trim()) {
+      feedback.textContent = "Écris d’abord ta réponse 😉";
+      return;
+    }
+
+    const normalizedExpected = normalizeText(expected);
+    const normalizedUser = normalizeText(userInput);
+
+    if (normalizedExpected === normalizedUser) {
+      score++;
+      scoreSpan.textContent = score;
+      feedback.textContent = "Bravo, c’est correct ! 🎉";
+    } else {
+      feedback.textContent = "Presque ! Le bon mot/phrase était : « " + expected + " »";
+      mistakes.push({
+        expected: expected,
+        answer: userInput
+      });
+    }
+
+    currentIndex++;
+
+    if (currentIndex < words.length) {
+      setTimeout(updateUIForCurrentWord, 2200);
+    } else {
+      finishExercise();
+    }
+  }
+
+  function finishExercise() {
+    progressInner.style.width = "100%";
+
+    exerciseContent.style.display = "none";
+    resultSection.style.display = "block";
+
+    const total = words.length;
+    finalScoreSpan.textContent = "Tu as " + score + " bonne(s) réponse(s) sur " + total + ".";
+
+    mistakesList.innerHTML = "";
+    if (mistakes.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "Aucune erreur, super travail ! 🌟";
+      mistakesList.appendChild(li);
+    } else {
+      mistakes.forEach(m => {
+        const li = document.createElement("li");
+        li.textContent = "Tu as écrit « " + m.answer + " » au lieu de « " + m.expected + " »";
+        mistakesList.appendChild(li);
+      });
+    }
+
+    saveResults();
+
+    // ⭐ Récompense : 3 étoiles + 2 si aucune erreur
+    let gained = 3;
+    if (mistakes.length === 0) {
+      gained += 2;
+    }
+    addStars(gained);
+    starsGainP.textContent = "Tu as gagné " + gained + " étoile(s) ⭐ pour la boutique !";
+  }
+
+  btnValidate.addEventListener("click", validateAnswer);
+
+  answerInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      validateAnswer();
+    }
   });
-}
 
-// Restart
-function restart() {
-  location.reload();
-}
+  btnSpeak.addEventListener("click", () => {
+    if (currentIndex >= words.length) return;
+    const word = words[currentIndex];
+    if ("speechSynthesis" in window) {
+      speak(word);
+    }
+  });
 
-loadWords();
+  btnRestart.addEventListener("click", () => {
+    initExercise();
+  });
+
+  function init() {
+    ensureThemeDefaults();
+    applyThemeFromStorage();
+    updateStarDisplay();
+    initExercise();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 </script>
 
 </body>
 </html>
+

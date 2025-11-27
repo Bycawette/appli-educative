@@ -4,179 +4,842 @@
 <meta charset="UTF-8">
 <title>Mathématiques – Tables de multiplication</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-/* === même base que orthographe.html pour rester cohérent === */
+:root {
+  /* Palette claire */
+  --bg-main: #e0f2fe;
+  --bg-gradient-1: #eef2ff;
+  --bg-gradient-2: #e0f2fe;
+
+  --card-light: #ffffff;
+  --card-soft: #f1f5f9;
+
+  --accent: #fb923c;
+  --accent-strong: #ea580c;
+  --accent-soft: #fed7aa;
+  --accent-alt: #22c55e;
+  --accent-purple: #a855f7;
+  --accent-blue: #3b82f6;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  --border-subtle: rgba(148, 163, 184, 0.5);
+
+  --radius-lg: 22px;
+  --radius-xxl: 30px;
+  --radius-pill: 999px;
+
+  --shadow-hard: 0 24px 50px rgba(15, 23, 42, 0.15);
+  --shadow-soft: 0 16px 35px rgba(15, 23, 42, 0.12);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: system-ui, sans-serif;
   margin: 0;
-  padding: 0;
-  background: #f4f6fb;
-  color: #222;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+    radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
 }
-header {
-  background: #3C6FC0; /* bleu pour les maths, mais même style */
-  color: #fff;
-  padding: 1rem 1.2rem;
-  text-align: center;
-  font-size: 1.4rem;
-  font-weight: bold;
+
+/* === HEADER (on garde un bandeau un peu plus sombre mais pas noir) === */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 0.75rem 1.5rem 0.9rem;
+  background: linear-gradient(90deg, #1e293b, #0f172a);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.5);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.5);
+  color: #f9fafb;
 }
-.container {
-  max-width: 800px;
-  margin: 1rem auto;
-  background: #ffffff;
-  padding: 1.2rem;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
-button {
-  background: #3C6FC0;
-  color: #fff;
-  padding: 8px 14px;
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 18px;
+  background: radial-gradient(circle at top, #4f46e5, #1e1b4b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.8);
+  font-size: 1.8rem;
+}
+
+.header-text-main {
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.header-text-sub {
+  font-size: 0.85rem;
+  color: #cbd5f5;
+}
+
+/* Bouton retour */
+.header-right a {
+  text-decoration: none;
+}
+
+.btn-retour {
   border: none;
-  border-radius: 8px;
+  padding: 0.55rem 1.15rem;
+  border-radius: var(--radius-pill);
+  background: radial-gradient(circle at top left, rgba(251, 146, 60, 0.4), rgba(15, 23, 42, 1));
+  color: #fefce8;
+  font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
-  margin-top: 8px;
-  font-size: 1rem;
-}
-button:hover { background: #3059a0; }
-
-input[type="number"], input[type="text"] {
-  padding: 6px 8px;
-  margin-top: 4px;
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow:
+    0 0 0 1px rgba(251, 146, 60, 0.8),
+    0 12px 30px rgba(15, 23, 42, 0.7);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, opacity 0.12s ease;
 }
 
-label {
+.btn-retour span.icon {
+  font-size: 1rem;
+}
+
+.btn-retour:hover {
+  transform: translateY(-1px);
+  background: radial-gradient(circle at top left, rgba(251, 146, 60, 0.7), rgba(15, 23, 42, 1));
+  box-shadow:
+    0 0 0 1px rgba(251, 146, 60, 0.95),
+    0 16px 38px rgba(15, 23, 42, 0.9);
+}
+
+/* === LAYOUT PRINCIPAL === */
+main {
+  flex: 1;
+  padding: 1.3rem 1.1rem 1.8rem;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* === BANDEAU D'INFO + STICKERS BAR === */
+.hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-bottom: 0.7rem;
+}
+
+.hero-card {
+  flex: 2 1 260px;
+  background: radial-gradient(circle at top left, #ffffff, #e0f2fe);
+  border-radius: var(--radius-xxl);
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  box-shadow: var(--shadow-soft);
+  padding: 1rem 1.4rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.hero-left {
+  flex: 1;
+}
+
+.hero-title {
+  font-size: 1.1rem;
+  font-weight: 650;
+  margin-bottom: 0.25rem;
+}
+
+.hero-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.hero-tagline {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #f97316;
+  font-weight: 600;
+}
+
+.hero-right {
+  width: 90px;
+  height: 90px;
+  border-radius: 999px;
+  background: conic-gradient(from 210deg, #22c55e, #a855f7, #fb923c, #22c55e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-right-inner {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.hero-mini {
+  flex: 1 1 180px;
+  background: #f9fafb;
+  border-radius: 24px;
+  border: 1px dashed rgba(148, 163, 184, 0.7);
+  box-shadow: 0 10px 28px rgba(148, 163, 184, 0.25);
+  padding: 0.9rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* BARRE DE STICKERS GAMING */
+.sticker-bar {
+  margin: 0.3rem 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sticker-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #eff6ff;
+  box-shadow: 0 10px 25px rgba(148, 163, 184, 0.45);
+}
+
+.sticker-chip span.icon {
+  font-size: 1rem;
+}
+
+.sticker-xp {
+  background: linear-gradient(120deg, #bbf7d0, #6ee7b7);
+}
+
+.sticker-combo {
+  background: linear-gradient(120deg, #fce7f3, #f9a8d4);
+}
+
+.sticker-perfect {
+  background: linear-gradient(120deg, #dbeafe, #bfdbfe);
+}
+
+/* === ONGLET PARENT / ENFANT === */
+.tab-bar {
+  margin-top: 0.4rem;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  border-radius: var(--radius-pill);
+  padding: 0.18rem;
+  background: #e2e8f0;
+  box-shadow: 0 10px 22px rgba(148, 163, 184, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+}
+
+.tab-button {
+  border: none;
+  background: transparent;
+  padding: 0.4rem 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.tab-button span.icon {
+  font-size: 1.1rem;
+}
+
+.tab-button.active {
+  background: linear-gradient(120deg, #fb923c, #f97316);
+  color: #fefce8;
+  box-shadow:
+    0 0 0 1px rgba(248, 250, 252, 0.5),
+    0 10px 22px rgba(248, 113, 22, 0.7);
+}
+
+.tab-button:hover {
+  transform: translateY(-1px);
+}
+
+/* === CARTES PRINCIPALES === */
+.card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-hard);
+  padding: 1.25rem 1.4rem 1.4rem;
+  margin-bottom: 1rem;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 650;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card h2 span.icon {
+  font-size: 1.25rem;
+}
+
+.card p {
+  margin: 0.6rem 0;
   font-size: 0.95rem;
 }
 
-#feedback { font-weight:bold; margin-top: 8px; }
-ul { padding-left: 20px; }
-
-/* petits ajouts pour rendre ça propre */
+/* Mode parent : pastilles de tables */
 .tables-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 8px;
-  margin-top: 4px;
+  gap: 0.42rem;
+  margin-top: 0.4rem;
 }
+
 .tables-grid label {
-  background:#e9edff;
-  padding:2px 6px;
-  border-radius:4px;
+  background: #eff6ff;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  font-size: 0.85rem;
+  color: #0f172a;
+  box-shadow: 0 8px 18px rgba(148, 163, 184, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
-small {
-  color:#555;
+
+.tables-grid input[type="checkbox"] {
+  accent-color: var(--accent);
 }
+
+/* Champs et boutons */
+label {
+  font-size: 0.9rem;
+}
+
+input[type="number"],
+input[type="text"] {
+  padding: 0.45rem 0.65rem;
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.8);
+  background: #f8fafc;
+  color: var(--text-main);
+  outline: none;
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus {
+  border-color: #fb923c;
+  box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.8);
+}
+
+button {
+  border-radius: var(--radius-pill);
+  border: none;
+  padding: 0.55rem 1.2rem;
+  background: radial-gradient(circle at top, var(--accent), var(--accent-strong));
+  color: #fff;
+  font-weight: 650;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px rgba(248, 250, 252, 0.5),
+    0 12px 30px rgba(248, 113, 22, 0.7);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow:
+    0 0 0 1px rgba(248, 250, 252, 0.9),
+    0 16px 38px rgba(249, 115, 22, 0.8);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow:
+    0 0 0 1px rgba(249, 250, 251, 0.7),
+    0 11px 26px rgba(248, 113, 22, 0.7);
+}
+
+/* Message sauvegarde */
+#saveStatus {
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  color: #ea580c;
+  font-weight: 600;
+}
+
+/* === MODE ENFANT === */
+.child-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+  gap: 1.1rem;
+}
+
+@media (max-width: 840px) {
+  .child-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.child-main {
+  position: relative;
+  background: radial-gradient(circle at top left, #ffffff, #e0f2fe);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  padding: 1rem 1.1rem 1.1rem;
+  box-shadow: 0 18px 42px rgba(148, 163, 184, 0.6);
+}
+
+/* STICKERS FLOTTANTS GAMING AUTOUR DE LA QUESTION */
+.child-main::before,
+.child-main::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.child-main::before {
+  width: 76px;
+  height: 28px;
+  top: -14px;
+  right: 16px;
+  background: linear-gradient(120deg, #22c55e, #bbf7d0);
+  box-shadow: 0 12px 25px rgba(34, 197, 94, 0.5);
+}
+
+.child-main::after {
+  width: 88px;
+  height: 30px;
+  bottom: -15px;
+  left: 18px;
+  background: linear-gradient(120deg, #f97316, #fed7aa);
+  box-shadow: 0 -10px 22px rgba(249, 115, 22, 0.45);
+}
+
+/* Faux stickers texte en overlay */
+.child-sticker-top,
+.child-sticker-bottom {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #064e3b;
+  pointer-events: none;
+}
+
+.child-sticker-top {
+  top: -11px;
+  right: 22px;
+}
+
+.child-sticker-bottom {
+  bottom: -11px;
+  left: 24px;
+  color: #7c2d12;
+}
+
+.child-side {
+  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  padding: 1rem 1.1rem 1.1rem;
+  box-shadow: 0 14px 30px rgba(148, 163, 184, 0.6);
+}
+
+.child-side-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.child-side-line {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin: 0.2rem 0;
+}
+
+.child-side-line span.label {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Info question & score */
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.info-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  background: #eff6ff;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+}
+
+.info-pill span.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #f97316;
+}
+
+/* Barre de progression */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.65rem 0 0.8rem;
+}
+
+.progress-inner {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), #facc15);
+  transition: width 0.2s ease-out;
+}
+
+/* Question */
+#questionText {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 0.4rem;
+}
+
+#questionHelp {
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+#answerArea {
+  margin-top: 0.8rem;
+}
+
+#answerArea input[type="number"] {
+  max-width: 130px;
+  margin-right: 0.5rem;
+}
+
+/* Options QCM */
 .quiz-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 8px;
+  gap: 0.55rem;
 }
+
 .quiz-options button {
   width: 100%;
+  font-size: 0.95rem;
 }
-.info-bar {
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin:8px 0;
-  font-weight:bold;
+
+/* Feedback */
+#feedback {
+  font-weight: 600;
+  margin-top: 0.7rem;
+  min-height: 1.1rem;
 }
-.progress {
-  width:100%;
-  height:8px;
-  background:#dde3f0;
-  border-radius:999px;
-  overflow:hidden;
-  margin-bottom:8px;
+
+/* Résultats */
+#result {
+  margin-top: 0.5rem;
 }
-.progress-inner {
-  height:100%;
-  width:0%;
-  background:#3C6FC0;
-  transition: width 0.2s ease-out;
+
+#finalScore {
+  font-size: 1rem;
+  font-weight: 650;
+  margin-bottom: 0.4rem;
+}
+
+#mistakes {
+  padding-left: 1.2rem;
+  margin-top: 0.4rem;
+}
+
+#mistakes li {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive header */
+@media (max-width: 720px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Focus visible */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
 </style>
 </head>
 
 <body>
 
-<header>Mathématiques – Tables de multiplication</header>
-
-<div style="margin:10px;">
-  <a href="index.html"
-     style="display:inline-block;background:#3C6FC0;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
-    ⟵ Retour à l'accueil
-  </a>
-</div>
-
-<!-- MODE PARENT -->
-<div class="container">
-  <h2>Mode parent – Réglages</h2>
-
-  <p><strong>Choisir les tables à travailler</strong> (si aucune n’est cochée, toutes seront utilisées) :</p>
-  <div class="tables-grid" id="tablesParent"></div>
-
-  <p style="margin-top:10px;"><strong>Type de questions</strong> :</p>
-  <label><input type="radio" name="mode" value="mixte" checked> Mixte (directes + chercher l’opération)</label><br>
-  <label><input type="radio" name="mode" value="direct"> Questions directes (7 × 8 = ?)</label><br>
-  <label><input type="radio" name="mode" value="operation"> Chercher l’opération (Quel calcul donne 56 ?)</label>
-
-  <p style="margin-top:10px;">
-    <label>Nombre de questions :
-      <input type="number" id="nbQuestions" min="5" max="50" value="15">
-    </label>
-  </p>
-
-  <p>
-    <label>Facteur maximum (jusqu’à × …) :
-      <input type="number" id="maxFactor" min="5" max="12" value="10">
-    </label>
-  </p>
-
-  <button onclick="saveConfig()">Enregistrer les réglages</button>
-  <p id="saveStatus" style="font-weight:bold;"></p>
-</div>
-
-<!-- MODE ENFANT -->
-<div class="container" id="exerciseSection" style="display:none;">
-  <h2>Mode enfant – Entraînement</h2>
-  <p style="font-size:1.1rem;margin-top:0;">Réponds aux questions de tables de multiplication.</p>
-
-  <div class="info-bar">
-    <span>Question : <span id="questionIndex">0</span> / <span id="questionTotal">0</span></span>
-    <span>Score : <span id="score">0</span></span>
+<header class="app-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-icon">✖️</div>
+      <div>
+        <div class="header-text-main">Tables de multiplication</div>
+        <div class="header-text-sub">Un espace parent 👨‍👧 et enfant 🧠 pour progresser en s’amusant.</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a href="index.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⟵</span>
+          <span>Retour à l'accueil</span>
+        </button>
+      </a>
+    </div>
   </div>
+</header>
 
-  <div class="progress">
-    <div class="progress-inner" id="progressInner"></div>
+<main>
+  <div class="page">
+
+    <!-- Bandeau hero -->
+    <div class="hero-row">
+      <div class="hero-card">
+        <div class="hero-left">
+          <div class="hero-title">Entraînement aux tables</div>
+          <div class="hero-sub">Choisis les tables dans le mode parent, puis laisse l’enfant jouer avec les questions.</div>
+          <div class="hero-tagline">Astuce : mélange les questions directes et “Quel calcul donne 56 ?” pour un vrai mode gaming.</div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-right-inner">
+            <div>
+              <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:#6b7280;">Mode</div>
+              <div style="font-size:1.05rem;">Arcade</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-mini">
+        Mode d’emploi rapide :<br>
+        1️⃣ Le parent règle les paramètres.<br>
+        2️⃣ La série de questions démarre.<br>
+        3️⃣ À la fin, les erreurs sont listées pour pouvoir les retravailler.
+      </div>
+    </div>
+
+    <!-- Barre de stickers -->
+    <div class="sticker-bar">
+      <div class="sticker-chip sticker-xp">
+        <span class="icon">⚡</span>
+        <span>+10 XP</span>
+      </div>
+      <div class="sticker-chip sticker-combo">
+        <span class="icon">🎮</span>
+        <span>Combo x3</span>
+      </div>
+      <div class="sticker-chip sticker-perfect">
+        <span class="icon">⭐</span>
+        <span>Perfect run</span>
+      </div>
+    </div>
+
+    <!-- Onglets -->
+    <div class="tab-bar">
+      <button class="tab-button active" id="tabParent" type="button" onclick="showTab('parent')">
+        <span class="icon">👨‍👧</span> Mode parent
+      </button>
+      <button class="tab-button" id="tabChild" type="button" onclick="showTab('child')">
+        <span class="icon">🧠</span> Mode enfant
+      </button>
+    </div>
+
+    <!-- MODE PARENT -->
+    <section class="card" id="parentSection">
+      <h2><span class="icon">👨‍👧</span> Réglages du parent</h2>
+
+      <p><strong>Tables à travailler</strong> <span style="font-size:0.85rem;color:var(--text-muted);">(si aucune n’est cochée, 1 à 10 seront utilisées)</span></p>
+      <div class="tables-grid" id="tablesParent"></div>
+
+      <p style="margin-top:0.8rem;"><strong>Type de questions</strong> :</p>
+      <label><input type="radio" name="mode" value="mixte" checked> Mixte (directes + chercher l’opération)</label><br>
+      <label><input type="radio" name="mode" value="direct"> Questions directes (7 × 8 = ?)</label><br>
+      <label><input type="radio" name="mode" value="operation"> Chercher l’opération (Quel calcul donne 56 ?)</label>
+
+      <p style="margin-top:0.8rem;">
+        <label>Nombre de questions :
+          <input type="number" id="nbQuestions" min="5" max="50" value="15">
+        </label>
+      </p>
+
+      <p>
+        <label>Facteur maximum (jusqu’à × …) :
+          <input type="number" id="maxFactor" min="5" max="12" value="10">
+        </label>
+      </p>
+
+      <button onclick="saveConfig()">Enregistrer les réglages & lancer</button>
+      <p id="saveStatus"></p>
+    </section>
+
+    <!-- MODE ENFANT -->
+    <section class="card" id="exerciseSection" style="display:none;">
+      <h2><span class="icon">🧠</span> Mode enfant – Entraînement</h2>
+      <p style="font-size:0.95rem;margin-top:0.35rem;">Réponds aux questions de tables. Tu peux taper le résultat ou cliquer sur la bonne opération.</p>
+
+      <div class="child-layout">
+        <div class="child-main">
+          <div class="child-sticker-top">Combo ready</div>
+          <div class="child-sticker-bottom">+ XP bonus</div>
+
+          <div class="info-bar">
+            <div class="info-pill">
+              <span class="dot"></span>
+              <span>Question <span id="questionIndex">0</span> / <span id="questionTotal">0</span></span>
+            </div>
+            <div class="info-pill">
+              <span class="dot" style="background:#22c55e;"></span>
+              <span>Score : <span id="score">0</span></span>
+            </div>
+          </div>
+
+          <div class="progress">
+            <div class="progress-inner" id="progressInner"></div>
+          </div>
+
+          <p id="questionText">Les questions apparaîtront ici.</p>
+          <p id="questionHelp"></p>
+
+          <div id="answerArea"></div>
+
+          <p id="feedback"></p>
+        </div>
+
+        <div class="child-side">
+          <div class="child-side-title">Profil de la série</div>
+          <p class="child-side-line">
+            <span class="label">Tables choisies :</span>
+            <span id="sideTables">–</span>
+          </p>
+          <p class="child-side-line">
+            <span class="label">Type de questions :</span>
+            <span id="sideMode">–</span>
+          </p>
+          <p class="child-side-line">
+            <span class="label">Facteur max :</span>
+            <span id="sideMaxFactor">–</span>
+          </p>
+          <p class="child-side-line">
+            <span class="label">Nombre de questions :</span>
+            <span id="sideNbQuestions">–</span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTATS -->
+    <section class="card" id="result" style="display:none;">
+      <h2><span class="icon">🏁</span> Résultat de la série</h2>
+      <p id="finalScore"></p>
+      <p><strong>Questions à retravailler :</strong></p>
+      <ul id="mistakes"></ul>
+      <button onclick="restart()">Recommencer</button>
+    </section>
+
   </div>
-
-  <p id="questionText" style="font-size:1.3rem;font-weight:bold;margin-top:8px;">
-    Les questions apparaîtront ici.
-  </p>
-  <p id="questionHelp" style="margin-top:0;"><small></small></p>
-
-  <div id="answerArea"></div>
-
-  <p id="feedback"></p>
-</div>
-
-<!-- RESULTATS -->
-<div class="container" id="result" style="display:none;">
-  <h2>Résultat</h2>
-  <p id="finalScore"></p>
-  <p><strong>Questions à retravailler :</strong></p>
-  <ul id="mistakes"></ul>
-  <button onclick="restart()">Recommencer</button>
-</div>
+</main>
 
 <script>
 // ======================== CONFIG / MODE PARENT =========================
 var CONFIG_KEY = "tablesConfig_v1";
+
+function showTab(which) {
+  var parent = document.getElementById("parentSection");
+  var child = document.getElementById("exerciseSection");
+
+  var tabParent = document.getElementById("tabParent");
+  var tabChild = document.getElementById("tabChild");
+
+  if (which === "parent") {
+    parent.style.display = "block";
+    if (child) child.style.display = "none";
+    tabParent.classList.add("active");
+    tabChild.classList.remove("active");
+  } else {
+    parent.style.display = "block";
+    if (child) child.style.display = "block";
+    parent.style.display = "none";
+    tabParent.classList.remove("active");
+    tabChild.classList.add("active");
+  }
+}
 
 function saveConfig() {
   var tables = [];
@@ -217,10 +880,10 @@ function saveConfig() {
   };
 
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-  document.getElementById("saveStatus").textContent = "Réglages enregistrés !";
-
-  // on relance une nouvelle série enfant avec cette config
+  document.getElementById("saveStatus").textContent = "Réglages enregistrés ! La série démarre dans le mode enfant.";
+  updateSidePanel(config);
   startExerciseWithConfig(config);
+  showTab("child");
 }
 
 function loadConfig() {
@@ -354,6 +1017,17 @@ function buildQuestions(config) {
   return list;
 }
 
+function updateSidePanel(config) {
+  if (!config) return;
+  document.getElementById("sideTables").textContent = config.tables.join(", ");
+  var modeText = "Mixte";
+  if (config.mode === "direct") modeText = "Questions directes";
+  if (config.mode === "operation") modeText = "Chercher l’opération";
+  document.getElementById("sideMode").textContent = modeText;
+  document.getElementById("sideMaxFactor").textContent = config.maxFactor;
+  document.getElementById("sideNbQuestions").textContent = config.nbQuestions;
+}
+
 function startExerciseWithConfig(config) {
   questions = buildQuestions(config);
   currentIndex = 0;
@@ -402,7 +1076,7 @@ function showCurrentQuestion() {
 
   if (q.type === "direct") {
     questionTextEl.textContent = q.a + " × " + q.b + " = ?";
-    questionHelpEl.innerHTML = "<small>Écris le résultat.</small>";
+    questionHelpEl.textContent = "Écris le résultat puis appuie sur Entrée ou sur Valider.";
 
     var input = document.createElement("input");
     input.type = "number";
@@ -426,7 +1100,7 @@ function showCurrentQuestion() {
     input.focus();
   } else {
     questionTextEl.textContent = "Quel calcul donne " + q.result + " ?";
-    questionHelpEl.innerHTML = "<small>Clique sur la bonne opération.</small>";
+    questionHelpEl.textContent = "Clique sur la bonne opération.";
 
     var grid = document.createElement("div");
     grid.className = "quiz-options";
@@ -466,11 +1140,11 @@ function checkDirectAnswer() {
   var correct = q.result;
 
   if (user === correct) {
-    feedbackEl.textContent = "Correct !";
+    feedbackEl.textContent = "Correct ! 🎉";
     score++;
     document.getElementById("score").textContent = String(score);
   } else {
-    feedbackEl.textContent = "Incorrect.";
+    feedbackEl.textContent = "Incorrect… La bonne réponse sera notée dans les erreurs.";
     mistakesList.push({
       question: q.a + " × " + q.b + " = " + correct,
       child: val
@@ -486,11 +1160,11 @@ function checkOperationAnswer(label) {
   var feedbackEl = document.getElementById("feedback");
 
   if (label === q.correctOption) {
-    feedbackEl.textContent = "Correct !";
+    feedbackEl.textContent = "Correct ! 🌟";
     score++;
     document.getElementById("score").textContent = String(score);
   } else {
-    feedbackEl.textContent = "Incorrect.";
+    feedbackEl.textContent = "Non, ce n’est pas ce calcul-là.";
     mistakesList.push({
       question: q.correctOption + " = " + q.result,
       child: label
@@ -502,7 +1176,7 @@ function checkOperationAnswer(label) {
 }
 
 function endExercise() {
-  document.getElementById("exerciseSection").style.display = "none";
+  document.getElementById("exerciseSection").style.display = "block";
   document.getElementById("result").style.display = "block";
 
   var total = questions.length;
@@ -519,7 +1193,6 @@ function endExercise() {
 }
 
 function restart() {
-  // comme pour orthographe : on recharge simplement la page
   location.reload();
 }
 
@@ -528,9 +1201,12 @@ function init() {
   var savedConfig = loadConfig();
   initTablesUI(savedConfig);
   if (savedConfig) {
-    // si une config existe, on affiche directement le mode enfant
+    updateSidePanel(savedConfig);
     startExerciseWithConfig(savedConfig);
     document.getElementById("saveStatus").textContent = "Réglages chargés.";
+    showTab("child");
+  } else {
+    showTab("parent");
   }
 }
 

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil – Mon Monde Curieux</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #42a5ff 0%, #ffe7f1 50%, #ffbf7f 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      color: #111827;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1000px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding: 8px 8px 0;
+    }
+
+    .header-title {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ff5a5f, #ffb400, #00c49a);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .header-subtitle {
+      margin-top: 4px;
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    /* SCÈNE ILLUSTRÉE (HÉRO) */
+    .scene {
+      position: relative;
+      min-height: 260px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.22);
+      background: linear-gradient(180deg, #2196f3 0%, #b3e5fc 40%, #ffecb3 100%);
+    }
+
+    .scene-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 24px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .scene-sun {
+      position: absolute;
+      top: 24px;
+      right: 26px;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff59d 0%, #ffeb3b 55%, #fbc02d 100%);
+      box-shadow: 0 0 28px rgba(255, 235, 59, 0.9);
+    }
+
+    .scene-hills {
+      position: absolute;
+      bottom: 0;
+      left: -40px;
+      right: -40px;
+      height: 45%;
+      background:
+        radial-gradient(circle at 10% 80%, #00c853 0, #00c853 40%, transparent 40%),
+        radial-gradient(circle at 50% 110%, #009688 0, #009688 48%, transparent 48%),
+        radial-gradient(circle at 90% 80%, #64dd17 0, #64dd17 42%, transparent 42%);
+    }
+
+    /* MASCOTTE */
+    .mascot-wrapper {
+      position: relative;
+      z-index: 2;
+      align-self: flex-start;
+      margin-left: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mascot-badge {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+    }
+
+    .mascot-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .mascot {
+      width: 120px;
+      height: 140px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #ffffff 0%, #ffe0fb 40%, #ffb199 100%);
+      box-shadow: 0 14px 20px rgba(15, 23, 42, 0.3);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mascot-face {
+      width: 78px;
+      height: 78px;
+      border-radius: 24px;
+      background: #fff;
+      border: 3px solid #ff5a5f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .mascot-eyes {
+      display: flex;
+      gap: 10px;
+    }
+
+    .eye {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #111827;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .eye::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .mascot-smile {
+      width: 30px;
+      height: 16px;
+      border-radius: 0 0 20px 20px;
+      border-bottom: 3px solid #f97316;
+      margin-top: 2px;
+    }
+
+    .mascot-bookmark {
+      position: absolute;
+      top: -6px;
+      right: 22px;
+      width: 18px;
+      height: 34px;
+      background: linear-gradient(180deg, #ff5a5f 0%, #ff4081 100%);
+      border-radius: 8px 8px 14px 14px;
+    }
+
+    .scene-text {
+      position: relative;
+      z-index: 2;
+      align-self: flex-start;
+      margin-top: 18px;
+      max-width: 280px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.22);
+    }
+
+    .scene-text::after {
+      content: "";
+      position: absolute;
+      bottom: -14px;
+      left: 24px;
+      border-width: 14px 10px 0 10px;
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.95) transparent transparent transparent;
+    }
+
+    /* ACTIONS HÉRO */
+    .actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+
+    .primary-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: none;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #ff5a5f 0%, #ff9800 50%, #ffc107 100%);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(255, 152, 0, 0.55);
+      font-size: 1.07rem;
+      padding-inline: 26px;
+    }
+
+    .btn-main:hover {
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 13px 26px rgba(255, 152, 0, 0.65);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.95);
+      color: #111827;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      box-shadow: 0 6px 12px rgba(15, 23, 42, 0.22);
+      font-size: 0.9rem;
+    }
+
+    .btn-secondary:hover {
+      background: #e5f0ff;
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      font-size: 1.1rem;
+    }
+
+    .actions-note {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      max-width: 260px;
+    }
+
+    /* SECTION ENFANT : MODULES – VERSION PLUS ATTRACTIVE */
+    .child-section {
+      margin-top: 4px;
+      border-radius: 28px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.25);
+      background: radial-gradient(circle at 0% 0%, #ffe1ff 0, transparent 55%),
+                  radial-gradient(circle at 100% 100%, #fff3c4 0, transparent 55%),
+                  linear-gradient(135deg, #e0f2ff 0%, #fff9f0 60%, #ffe4ff 100%);
+      border: 2px solid rgba(255, 152, 0, 0.6);
+    }
+
+    .child-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .child-section-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .child-section-title span.icon {
+      font-size: 1.5rem;
+    }
+
+    .child-section-subtitle {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      color: #1d4ed8;
+      white-space: nowrap;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .module-card {
+      position: relative;
+      display: block;
+      text-decoration: none;
+      border-radius: 18px;
+      padding: 12px 13px 13px;
+      color: #111827;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.16);
+      transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+    }
+
+    .module-card::before {
+      content: "";
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 999px;
+      opacity: 0.25;
+      background: radial-gradient(circle, #ffffff 0, transparent 70%);
+    }
+
+    .module-card:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.22);
+      filter: brightness(1.02);
+    }
+
+    .module-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .module-title {
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .module-title span.icon {
+      font-size: 1.2rem;
+    }
+
+    .module-tag {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    .module-desc {
+      font-size: 0.85rem;
+      color: #111827;
+      opacity: 0.9;
+      margin-top: 3px;
+    }
+
+    /* Couleurs différentes par matière */
+    .module-maths {
+      background: linear-gradient(135deg, #ff9f1c 0%, #ffbf69 40%, #ffe8a3 100%);
+    }
+
+    .module-geo {
+      background: linear-gradient(135deg, #00c9a7 0%, #5cf2c7 40%, #d7fff1 100%);
+    }
+
+    .module-conjug {
+      background: linear-gradient(135deg, #ff6fb5 0%, #ff9ed6 40%, #ffe1f2 100%);
+    }
+
+    .module-ortho {
+      background: linear-gradient(135deg, #4f46e5 0%, #818cf8 40%, #e0e7ff 100%);
+      color: #f9fafb;
+    }
+
+    .module-ortho .module-desc {
+      color: #eef2ff;
+    }
+
+    .module-homophones {
+      background: linear-gradient(135deg, #22c55e 0%, #86efac 40%, #eafff1 100%);
+    }
+
+    /* OVERLAY PARENTS (PIN) */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 20;
+    }
+
+    .overlay.active {
+      display: flex;
+    }
+
+    .overlay-panel {
+      background: #f9fafb;
+      border-radius: 22px;
+      max-width: 360px;
+      width: 100%;
+      padding: 22px 20px 18px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+    }
+
+    .overlay-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+
+    .overlay-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 14px;
+    }
+
+    .pin-inputs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .pin-inputs input {
+      width: 42px;
+      height: 48px;
+      text-align: center;
+      font-size: 1.4rem;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      outline: none;
+      transition: border 0.12s ease, box-shadow 0.12s ease;
+      background: #fff;
+    }
+
+    .pin-inputs input:focus {
+      border-color: #ff9800;
+      box-shadow: 0 0 0 2px rgba(255, 152, 0, 0.3);
+    }
+
+    .overlay-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .overlay-error {
+      font-size: 0.82rem;
+      color: #dc2626;
+      min-height: 1.1em;
+    }
+
+    .overlay-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .overlay-btn-cancel {
+      background: transparent;
+      color: #4b5563;
+    }
+
+    .overlay-btn-validate {
+      background: #ff9800;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(255, 152, 0, 0.5);
+    }
+
+    .overlay-btn-validate:disabled {
+      opacity: 0.5;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    @media (max-width: 640px) {
+      .header-title {
+        font-size: 1.6rem;
+      }
+
+      .scene-inner {
+        padding: 18px 16px 16px;
+      }
+
+      .mascot {
+        width: 104px;
+        height: 122px;
+      }
+
+      .scene-text {
+        font-size: 0.9rem;
+      }
+
+      .child-section {
+        padding: 14px 12px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- HEADER -->
+    <header class="header">
+      <h1 class="header-title">Mon Monde Curieux</h1>
+      <p class="header-subtitle">Une appli pétillante pour apprendre, jouer et explorer.</p>
+    </header>
+
+    <!-- HÉRO -->
+    <section class="scene">
+      <div class="scene-inner">
+        <div class="scene-sun"></div>
+        <div class="scene-hills"></div>
+
+        <div class="mascot-wrapper">
+          <div class="mascot-badge">
+            <span class="mascot-badge-dot"></span>
+            <span>Prêt à découvrir ?</span>
+          </div>
+
+          <div class="mascot" aria-hidden="true">
+            <div class="mascot-bookmark"></div>
+            <div class="mascot-face">
+              <div class="mascot-eyes">
+                <div class="eye"></div>
+                <div class="eye"></div>
+              </div>
+              <div class="mascot-smile"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-text">
+          <strong>Bonjour !</strong><br>
+          On va travailler les tables, la géographie, la lecture et l’orthographe avec des jeux adaptés à ton âge.
+        </div>
+
+        <div class="actions" aria-label="Choix du mode">
+          <div class="primary-actions">
+            <button class="btn btn-main" id="btn-enfant">
+              <span class="btn-icon">🎒</span>
+              <span>Je commence !</span>
+            </button>
+            <p class="actions-note">
+              Le bouton fait descendre vers les activités pour l’enfant.
+            </p>
+          </div>
+
+          <div>
+            <button class="btn btn-secondary" id="btn-parents">
+              <span class="btn-icon">🔐</span>
+              <span>Espace parents</span>
+            </button>
+            <p class="actions-note">
+              Code actuel : <strong>0000</strong> (modifiable dans le code).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION ENFANT : MODULES -->
+    <section class="child-section" id="enfant-section">
+      <div class="child-section-header">
+        <div class="child-section-title">
+          <span class="icon">🧒</span>
+          <span>Mode enfant – Choisis ton activité</span>
+        </div>
+        <span class="pill">Autonome & ludique</span>
+      </div>
+
+      <p class="child-section-subtitle">
+        Clique sur une carte pour ouvrir le jeu correspondant.
+      </p>
+
+      <div class="modules-grid">
+        <!-- NOUVEAU : Tables – mission préparée -->
+        <a class="module-card module-maths" href="tables_enfant.html">
+          <div class="module-header-line">
+            <div class="module-title">
+              <span class="icon">🎯</span>
+              <span>Tables – mission préparée</span>
+            </div>
+            <span class="module-tag">Maths</span>
+          </div>
+          <p class="module-desc">
+            Ton parent choisit les tables, le nombre de questions et le type de jeu. Tu joues la mission.
+          </p>
+        </a>
+
+        <!-- Mode autonome (ancien mode) -->
+        <a class="module-card module-maths" href="tables_auto.html">
+          <div class="module-header-line">
+            <div class="module-title">
+              <span class="icon">🔢</span>
+              <span>Tables – mode autonome</span>
+            </div>
+            <span class="module-tag">Maths</span>
+          </div>
+          <p class="module-desc">
+            Tu choisis toi-même les tables à travailler, avec un entraînement libre.
+          </p>
+        </a>
+
+        <a class="module-card module-geo" href="geo_auto.html">
+          <div class="module-header-line">
+            <div class="module-title">
+              <span class="icon">🗺️</span>
+              <span>Géographie – Belgique</span>
+            </div>
+            <span class="module-tag">Découverte</span>
+          </div>
+          <p class="module-desc">
+            Retrouver villes, capitales et régions sur la carte.
+          </p>
+        </a>
+
+        <a class="module-card module-conjug" href="conjugaison.html">
+          <div class="module-header-line">
+            <div class="module-title">
+              <span class="icon">✏️</span>
+              <span>Conjugaison</span>
+            </div>
+            <span class="module-tag">Français</span>
+          </div>
+          <p class="module-desc">
+            Questions sur les verbes fréquents aux temps principaux.
+          </p>
+        </a>
+
+        <a class="module-card module-ortho" href="orthographe.html">
+          <div class="module-header-line">
+            <div class="module-title">
+              <span class="icon">📝</span>
+              <span>Dictée – Orthographe</span>
+            </div>
+            <span class="module-tag">Écriture</span>
+          </div>
+          <p class="module-desc">
+            Les parents encodent les mots, l’enfant les écrit.
+          </p>
+        </a>
+
+        <a class="module-card module-homophones" href="homophones.html">
+          <div class="module-header-line">
+            <div class="module-title">
+              <span class="icon">👂</span>
+              <span>Homophones</span>
+            </div>
+            <span class="module-tag">Français</span>
+          </div>
+          <p class="module-desc">
+            et/est, a/à, on/ont, son/sont… choisir la bonne phrase.
+          </p>
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <!-- OVERLAY CODE PARENTS -->
+  <div class="overlay" id="overlay-parents" aria-hidden="true">
+    <div class="overlay-panel" role="dialog" aria-modal="true" aria-labelledby="parents-title">
+      <h2 class="overlay-title" id="parents-title">Espace parents</h2>
+      <p class="overlay-subtitle">
+        Entrez le code à 4 chiffres pour accéder à la page parent (code par défaut : 0000).
+      </p>
+
+      <div class="pin-inputs" id="pin-inputs">
+        <input type="password" inputmode="numeric" maxlength="1" aria-label="Chiffre 1">
+        <input type="password" inputmode="numeric" maxlength="1" aria-label="Chiffre 2">
+        <input type="password" inputmode="numeric" maxlength="1" aria-label="Chiffre 3">
+        <input type="password" inputmode="numeric" maxlength="1" aria-label="Chiffre 4">
+      </div>
+
+      <div class="overlay-error" id="overlay-error"></div>
+
+      <div class="overlay-buttons">
+        <button class="overlay-btn overlay-btn-cancel" id="btn-cancel-overlay">
+          Annuler
+        </button>
+        <button class="overlay-btn overlay-btn-validate" id="btn-validate-overlay" disabled>
+          Valider
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== CONFIG : PIN PARENTS =====
+    const PARENTS_PIN = "0000"; // tu peux changer ici
+
+    const btnEnfant = document.getElementById("btn-enfant");
+    const enfantSection = document.getElementById("enfant-section");
+    const btnParents = document.getElementById("btn-parents");
+    const overlay = document.getElementById("overlay-parents");
+    const pinInputs = document.querySelectorAll("#pin-inputs input");
+    const overlayError = document.getElementById("overlay-error");
+    const btnCancelOverlay = document.getElementById("btn-cancel-overlay");
+    const btnValidateOverlay = document.getElementById("btn-validate-overlay");
+
+    // Bouton enfant : scroll vers les activités
+    btnEnfant.addEventListener("click", () => {
+      enfantSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    // Ouvrir overlay parents
+    btnParents.addEventListener("click", () => {
+      overlay.classList.add("active");
+      overlay.setAttribute("aria-hidden", "false");
+      resetPinInputs();
+      pinInputs[0].focus();
+    });
+
+    function closeOverlay() {
+      overlay.classList.remove("active");
+      overlay.setAttribute("aria-hidden", "true");
+    }
+
+    btnCancelOverlay.addEventListener("click", closeOverlay);
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeOverlay();
+    });
+
+    // Gestion PIN
+    pinInputs.forEach((input, index) => {
+      input.addEventListener("input", (e) => {
+        const value = e.target.value.replace(/\D/g, "");
+        e.target.value = value ? value[0] : "";
+
+        if (value && index < pinInputs.length - 1) {
+          pinInputs[index + 1].focus();
+        }
+        toggleValidateButton();
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !e.target.value && index > 0) {
+          pinInputs[index - 1].focus();
+        }
+        if (e.key === "Enter" && !btnValidateOverlay.disabled) {
+          validatePin();
+        }
+      });
+    });
+
+    function resetPinInputs() {
+      pinInputs.forEach(input => input.value = "");
+      overlayError.textContent = "";
+      btnValidateOverlay.disabled = true;
+    }
+
+    function getCurrentPin() {
+      let code = "";
+      pinInputs.forEach(input => code += (input.value || ""));
+      return code;
+    }
+
+    function toggleValidateButton() {
+      const code = getCurrentPin();
+      btnValidateOverlay.disabled = (code.length !== 4);
+      overlayError.textContent = "";
+    }
+
+    function validatePin() {
+      const code = getCurrentPin();
+      if (code === PARENTS_PIN) {
+        overlayError.textContent = "";
+        closeOverlay();
+        // Redirection vers la nouvelle page parent
+        window.location.href = "parent_accueil.html";
+      } else {
+        overlayError.textContent = "Code incorrect. Réessayez.";
+        pinInputs.forEach(input => input.value = "");
+        pinInputs[0].focus();
+        btnValidateOverlay.disabled = true;
+      }
+    }
+
+    btnValidateOverlay.addEventListener("click", validatePin);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("active")) {
+        closeOverlay();
+      }
+    });
+  </script>
+</body>
+</html>

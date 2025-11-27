@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Espace Parent – Préparer et suivre les missions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg-main: #e0f2fe;
+      --bg-gradient-1: #eef2ff;
+      --bg-gradient-2: #e0f2fe;
+
+      --card-light: #ffffff;
+      --card-soft: #f8fafc;
+
+      --accent: #fb923c;
+      --accent-strong: #ea580c;
+      --accent-soft: #fed7aa;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-gold: #facc15;
+      --accent-blue: #3b82f6;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --border-subtle: rgba(148, 163, 184, 0.6);
+
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+        radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #f9fafb;
+      padding: 0.8rem 1.4rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .header-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top, #4f46e5, #1e1b4b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+
+    .header-title {
+      font-size: 1.2rem;
+      font-weight: 650;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    .header-right a {
+      text-decoration: none;
+    }
+
+    .btn-retour {
+      border: none;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-pill);
+      background: radial-gradient(circle at top left, rgba(251, 146, 60, 0.4), rgba(15, 23, 42, 1));
+      color: #fefce8;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-retour span.icon {
+      font-size: 1rem;
+    }
+
+    /* ===== MAIN LAYOUT ===== */
+    main {
+      flex: 1;
+      padding: 1.3rem 1rem 1.8rem;
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      background: var(--card-light);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 1.1rem 1.2rem 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .intro p {
+      margin: 0.3rem 0;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .intro p.small {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .section-title {
+      margin: 1.1rem 0 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 650;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* ===== GRID DE TUILES ===== */
+    .tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .tile {
+      background: var(--card-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 0.9rem 1rem 1rem;
+      position: relative;
+    }
+
+    .tile-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .tile-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .tile-title-main {
+      font-size: 0.98rem;
+      font-weight: 650;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .tile-title-main span.icon {
+      font-size: 1.1rem;
+    }
+
+    .tile-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Badge d’état */
+    .badge {
+      padding: 0.15rem 0.55rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+
+    .badge span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .badge-ready {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-ready span.dot {
+      background: var(--accent-green);
+    }
+
+    .badge-todo {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-todo span.dot {
+      background: var(--accent-red);
+    }
+
+    .badge-played {
+      background: #fef9c3;
+      color: #854d0e;
+    }
+
+    .badge-played span.dot {
+      background: var(--accent-gold);
+    }
+
+    .tile-body {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      margin: 0.4rem 0 0.6rem;
+    }
+
+    .tile-actions {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .tile-actions a {
+      text-decoration: none;
+    }
+
+    .btn-small {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 0.38rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .btn-prepare {
+      background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+      color: #fefce8;
+    }
+
+    .btn-results {
+      background: #e0f2fe;
+      color: var(--accent-blue);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    .btn-small span.icon {
+      font-size: 1rem;
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-icon">👨‍👧</div>
+      <div>
+        <div class="header-title">Espace Parent</div>
+        <div class="header-sub">Préparez les missions et suivez les progrès de votre enfant.</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <!-- Pour l’instant, on renvoie encore vers index.html,
+           on changera plus tard si besoin -->
+      <a href="index.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⟵</span>
+          <span>Retour</span>
+        </button>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page">
+
+    <!-- INTRO PARENT -->
+    <section class="intro">
+      <h1>👨‍👧 Espace Parent – Préparer et suivre les missions</h1>
+      <p>
+        Bienvenue dans l’Espace Parent. Ici, vous préparez les <strong>missions</strong> que votre enfant va relever,
+        matière par matière, et vous pouvez ensuite <strong>suivre ses progrès</strong>.
+      </p>
+      <p>
+        Le principe est simple :
+        🔧 vous choisissez ce qu’il doit travailler (tables, conjugaison, géographie…),
+        🎮 votre enfant joue sur <strong>sa propre page</strong>,
+        📊 vous revenez ici pour voir les <strong>scores, erreurs et temps</strong>, et décider de la suite.
+      </p>
+      <p class="small">
+        L’objectif n’est pas de refaire l’école à la maison, mais de proposer des <strong>petites missions courtes et motivantes</strong>,
+        avec vous dans le rôle de <strong>coach bienveillant</strong>.
+      </p>
+    </section>
+
+    <h2 class="section-title">📚 Choisir une matière</h2>
+
+    <!-- TUILES MATIÈRES -->
+    <section class="tiles-grid">
+
+      <!-- TABLES -->
+      <article class="tile">
+        <div class="tile-header">
+          <div class="tile-title">
+            <div class="tile-title-main">
+              <span class="icon">🧮</span>
+              <span>Tables de multiplication</span>
+            </div>
+            <div class="tile-sub">
+              Des missions rapides pour entraîner une ou plusieurs tables (2–3–4, 7–8–9, etc.).
+            </div>
+          </div>
+          <!-- Pour l’instant, on met “À préparer” partout par défaut -->
+          <div class="badge badge-todo">
+            <span class="dot"></span>
+            <span>À préparer</span>
+          </div>
+        </div>
+
+        <div class="tile-body">
+          Choisissez les tables, le nombre de questions et le type de questions. Votre enfant répond ensuite sur sa page “Tables – Enfant”.
+        </div>
+
+        <div class="tile-actions">
+          <!-- Ces liens pointeront vers les futures pages parent/enfant des tables -->
+          <a href="tables_parent.html">
+            <button class="btn-small btn-prepare" type="button">
+              <span class="icon">🔧</span>
+              <span>Préparer</span>
+            </button>
+          </a>
+          <a href="tables_parent.html#resultats">
+            <button class="btn-small btn-results" type="button">
+              <span class="icon">📊</span>
+              <span>Résultats</span>
+            </button>
+          </a>
+        </div>
+      </article>
+
+      <!-- CONJUGAISON -->
+      <article class="tile">
+        <div class="tile-header">
+          <div class="tile-title">
+            <div class="tile-title-main">
+              <span class="icon">✏️</span>
+              <span>Conjugaison</span>
+            </div>
+            <div class="tile-sub">
+              Choisissez les verbes, les temps et les personnes à travailler.
+            </div>
+          </div>
+          <div class="badge badge-todo">
+            <span class="dot"></span>
+            <span>À préparer</span>
+          </div>
+        </div>
+
+        <div class="tile-body">
+          Préparez les listes de verbes et les temps (présent, imparfait, futur…). Votre enfant sera interrogé ensuite sur sa page de conjugaison.
+        </div>
+
+        <div class="tile-actions">
+          <a href="conjugaison_parent.html">
+            <button class="btn-small btn-prepare" type="button">
+              <span class="icon">🔧</span>
+              <span>Préparer</span>
+            </button>
+          </a>
+          <a href="conjugaison_parent.html#resultats">
+            <button class="btn-small btn-results" type="button">
+              <span class="icon">📊</span>
+              <span>Résultats</span>
+            </button>
+          </a>
+        </div>
+      </article>
+
+      <!-- GEOGRAPHIE -->
+      <article class="tile">
+        <div class="tile-header">
+          <div class="tile-title">
+            <div class="tile-title-main">
+              <span class="icon">🌍</span>
+              <span>Géographie</span>
+            </div>
+            <div class="tile-sub">
+              Pays, capitales, régions… à vous de choisir le terrain de jeu.
+            </div>
+          </div>
+          <div class="badge badge-todo">
+            <span class="dot"></span>
+            <span>À préparer</span>
+          </div>
+        </div>
+
+        <div class="tile-body">
+          Sélectionnez les thèmes (capitales, pays d’Europe, régions, etc.). Votre enfant travaillera ensuite ces éléments dans le module de géographie.
+        </div>
+
+        <div class="tile-actions">
+          <a href="geo_parent.html">
+            <button class="btn-small btn-prepare" type="button">
+              <span class="icon">🔧</span>
+              <span>Préparer</span>
+            </button>
+          </a>
+          <a href="geo_parent.html#resultats">
+            <button class="btn-small btn-results" type="button">
+              <span class="icon">📊</span>
+              <span>Résultats</span>
+            </button>
+          </a>
+        </div>
+      </article>
+
+      <!-- ORTHOGRAPHE -->
+      <article class="tile">
+        <div class="tile-header">
+          <div class="tile-title">
+            <div class="tile-title-main">
+              <span class="icon">📖</span>
+              <span>Orthographe</span>
+            </div>
+            <div class="tile-sub">
+              Mots difficiles, accords et petits pièges fréquents.
+            </div>
+          </div>
+          <div class="badge badge-todo">
+            <span class="dot"></span>
+            <span>À préparer</span>
+          </div>
+        </div>
+
+        <div class="tile-body">
+          Créez des petites séries de mots ou phrases à orthographier. Idéal pour revoir régulièrement les mêmes difficultés.
+        </div>
+
+        <div class="tile-actions">
+          <a href="orthographe_parent.html">
+            <button class="btn-small btn-prepare" type="button">
+              <span class="icon">🔧</span>
+              <span>Préparer</span>
+            </button>
+          </a>
+          <a href="orthographe_parent.html#resultats">
+            <button class="btn-small btn-results" type="button">
+              <span class="icon">📊</span>
+              <span>Résultats</span>
+            </button>
+          </a>
+        </div>
+      </article>
+
+      <!-- HOMOPHONES -->
+      <article class="tile">
+        <div class="tile-header">
+          <div class="tile-title">
+            <div class="tile-title-main">
+              <span class="icon">🎯</span>
+              <span>Homophones</span>
+            </div>
+            <div class="tile-sub">
+              Mots qui se prononcent pareil mais ne s’écrivent pas pareil.
+            </div>
+          </div>
+          <div class="badge badge-todo">
+            <span class="dot"></span>
+            <span>À préparer</span>
+          </div>
+        </div>
+
+        <div class="tile-body">
+          Choisissez les homophones les plus piégeux (a/à, et/est, son/sont…). Votre enfant s’entraînera à les distinguer en contexte.
+        </div>
+
+        <div class="tile-actions">
+          <a href="homophones_parent.html">
+            <button class="btn-small btn-prepare" type="button">
+              <span class="icon">🔧</span>
+              <span>Préparer</span>
+            </button>
+          </a>
+          <a href="homophones_parent.html#resultats">
+            <button class="btn-small btn-results" type="button">
+              <span class="icon">📊</span>
+              <span>Résultats</span>
+            </button>
+          </a>
+        </div>
+      </article>
+
+    </section>
+
+  </div>
+</main>
+
+</body>
+</html>

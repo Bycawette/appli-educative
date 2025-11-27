@@ -2,78 +2,266 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil – Applications éducatives</title>
+  <title>Accueil – Choisir Parent ou Enfant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      --bg-main: #e0f2fe;
+      --bg-gradient-1: #eef2ff;
+      --bg-gradient-2: #e0f2fe;
+
+      --card-light: #ffffff;
+      --accent-child: #3b82f6;
+      --accent-parent: #fb923c;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --radius-lg: 22px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      padding: 0;
+      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f6fb;
-      color: #222;
+      background:
+        radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+        radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
     }
+
     header {
-      background: #4455aa;
-      color: #fff;
-      padding: 1rem 1.5rem;
-      text-align: center;
+      padding: 0.9rem 1.4rem;
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #f9fafb;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.5);
     }
-    main {
+
+    .header-inner {
       max-width: 900px;
-      margin: 1.5rem auto;
-      padding: 0 1rem 2rem;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
     }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      margin-bottom: 18px;
+
+    .header-title {
+      font-size: 1.2rem;
+      font-weight: 650;
     }
-    .card h2 {
-      margin-top: 0;
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem 1rem 2rem;
+    }
+
+    .page {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 1.4rem;
+    }
+
+    .intro h1 {
+      margin: 0 0 0.4rem;
       font-size: 1.3rem;
     }
-    .btn-menu {
-      display: inline-block;
-      background: #4455aa;
-      color: #fff;
-      padding: 0.45rem 0.9rem;
-      text-decoration: none;
-      border-radius: 999px;
+
+    .intro p {
+      margin: 0.2rem 0;
       font-size: 0.95rem;
-      text-align: center;
-      margin: 0.3rem 0.3rem 0 0;
+      color: var(--text-muted);
     }
-    .btn-menu:hover {
-      background: #36468a;
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--card-light);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 1.1rem 1.2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 650;
+    }
+
+    .card-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .card-footer {
+      margin-top: 0.4rem;
+    }
+
+    .card-footer a {
+      text-decoration: none;
+    }
+
+    .btn-main {
+      border: none;
+      border-radius: var(--radius-pill);
+      padding: 0.55rem 1.1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-child {
+      background: linear-gradient(120deg, var(--accent-child), #2563eb);
+    }
+
+    .btn-parent {
+      background: linear-gradient(120deg, var(--accent-parent), #ea580c);
+    }
+
+    .btn-main span.icon {
+      font-size: 1.1rem;
+    }
+
+    .card-icon.child {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .card-icon.parent {
+      background: #ffedd5;
+      color: #c2410c;
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .intro p {
+        font-size: 0.9rem;
+      }
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
     }
   </style>
 </head>
+
 <body>
+
 <header>
-  <h1>Applications éducatives</h1>
+  <div class="header-inner">
+    <div>
+      <div class="header-title">Accueil</div>
+      <div class="header-sub">Choisissez qui utilise le site.</div>
+    </div>
+  </div>
 </header>
 
 <main>
+  <div class="page">
+    <section class="intro">
+      <h1>Qui utilise le site ?</h1>
+      <p>Choisissez si vous êtes l’enfant ou le parent. Vous serez ensuite dirigé vers l’espace adapté.</p>
+    </section>
 
-  <!-- 🧑‍💼 MODE PARENT -->
-  <section class="card">
-    <h2>👩‍👧‍👦 Mode parent</h2>
-    <p>Accès au tableau de bord et aux réglages.</p>
-    <a href="parent.html" class="btn-menu">Ouvrir le mode parent</a>
-  </section>
+    <section class="cards">
+      <!-- Carte Enfant -->
+      <article class="card">
+        <div class="card-header">
+          <div class="card-icon child">🧒</div>
+          <div>
+            <div class="card-title">Je suis l’enfant</div>
+          </div>
+        </div>
+        <p class="card-text">
+          Tu arrives sur ta page de jeux : tables, conjugaison, géographie, orthographe… 
+          C’est ton espace pour t’entraîner en t’amusant.
+        </p>
+        <div class="card-footer">
+          <a href="enfant_index.html">
+            <button class="btn-main btn-child" type="button">
+              <span class="icon">🎮</span>
+              <span>Aller à ma page</span>
+            </button>
+          </a>
+        </div>
+      </article>
 
-  <!-- 🧒 MODE ENFANT -->
-  <section class="card">
-    <h2>🧒 Mode enfant (autonome)</h2>
-    <p>Jeux éducatifs autonomes utilisés par l’enfant.</p>
-    <a href="geo_auto.html" class="btn-menu">Géographie</a>
-    <a href="tables_auto.html" class="btn-menu">Tables de multiplications</a>
-  </section>
-
+      <!-- Carte Parent -->
+      <article class="card">
+        <div class="card-header">
+          <div class="card-icon parent">👨‍👧</div>
+          <div>
+            <div class="card-title">Je suis le parent</div>
+          </div>
+        </div>
+        <p class="card-text">
+          Vous accédez à l’espace Parent pour préparer les missions (tables, conjugaison, etc.)
+          et suivre les scores, erreurs et temps de votre enfant.
+        </p>
+        <div class="card-footer">
+          <a href="parent_accueil.html">
+            <button class="btn-main btn-parent" type="button">
+              <span class="icon">📊</span>
+              <span>Ouvrir l’espace Parent</span>
+            </button>
+          </a>
+        </div>
+      </article>
+    </section>
+  </div>
 </main>
+
 </body>
 </html>
-<a href="conjugaison.html" class="btn-menu">Mode enfant – Conjugaison</a>
-<a href="orthographe.html" class="btn-menu">Mode enfant – Orthographe</a>
+

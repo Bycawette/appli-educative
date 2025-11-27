@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Boutique – Skins & Étoiles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg-main: #e0f2fe;
+      --bg-gradient-1: #eef2ff;
+      --bg-gradient-2: #e0f2fe;
+
+      --card-light: #ffffff;
+      --card-soft: #f8fafc;
+
+      --accent: #fb923c;
+      --accent-strong: #ea580c;
+      --accent-soft: #fed7aa;
+      --accent-alt: #22c55e;
+      --accent-blue: #3b82f6;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --border-subtle: rgba(148, 163, 184, 0.6);
+
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+        radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #f9fafb;
+      padding: 0.8rem 1.4rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .header-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      background: #fef3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #b45309;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 650;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .stars-pill {
+      border-radius: var(--radius-pill);
+      padding: 0.2rem 0.7rem;
+      background: rgba(250, 204, 21, 0.2);
+      border: 1px solid rgba(250, 204, 21, 0.8);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #facc15;
+    }
+
+    .stars-pill span.num {
+      font-weight: 700;
+      color: #fefce8;
+    }
+
+    .btn-retour {
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-pill);
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.3), rgba(15, 23, 42, 1));
+      color: #e0f2fe;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-retour span.icon { font-size: 1rem; }
+
+    main { flex: 1; }
+
+    .page {
+      max-width: 980px;
+      margin: 1.2rem auto 1.8rem;
+      padding: 0 1rem;
+    }
+
+    .intro-card {
+      background: var(--card-light);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.2rem;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.16);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    .intro-card strong {
+      font-weight: 650;
+    }
+
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.9rem;
+    }
+
+    .theme-card {
+      background: var(--card-soft);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 0.8rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    .theme-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+    }
+
+    .theme-header h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .theme-tag {
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .theme-preview {
+      height: 48px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .theme-cost {
+      font-size: 0.85rem;
+    }
+
+    .theme-cost span.price {
+      font-weight: 650;
+      color: #eab308;
+    }
+
+    .theme-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .btn-main,
+    .btn-secondary {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .btn-main {
+      background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+      color: #fefce8;
+      font-weight: 650;
+    }
+
+    .btn-secondary {
+      background: #e0f2fe;
+      color: #1d4ed8;
+      border: 1px solid rgba(148,163,184,0.7);
+      font-weight: 550;
+    }
+
+    .btn-main[disabled],
+    .btn-secondary[disabled] {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .theme-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      min-height: 1.1rem;
+    }
+
+    .theme-status.active {
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    .theme-status.locked {
+      color: #b91c1c;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-icon">⭐</div>
+      <div>
+        <div class="header-title">Boutique des thèmes</div>
+        <div class="header-sub">Utilise tes étoiles pour changer l'ambiance de ton espace.</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="stars-pill">
+        ⭐ <span class="num" id="starCount">0</span>
+      </div>
+      <a href="enfant_index.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⟵</span>
+          <span>Retour à l'accueil enfant</span>
+        </button>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page">
+
+    <section class="intro-card">
+      <p>
+        Tu gagnes des <strong>étoiles ⭐</strong> en terminant des dictées et des séances de conjugaison.
+      </p>
+      <p>
+        Quand tu en as assez, tu peux débloquer un <strong>nouveau thème</strong> pour changer les couleurs de ton espace.
+      </p>
+      <p>
+        Choisis l’ambiance que tu préfères. Tu peux en débloquer plusieurs et changer quand tu veux.
+      </p>
+    </section>
+
+    <section class="themes-grid">
+
+      <!-- Arc-en-ciel doux -->
+      <div class="theme-card" data-theme-id="arc_en_ciel">
+        <div class="theme-header">
+          <h3>🌈 Arc-en-ciel doux</h3>
+          <div class="theme-tag">Pastel</div>
+        </div>
+        <div class="theme-preview" style="background: linear-gradient(90deg,#fee2e2,#e0f2fe,#fef3c7);">
+          Couleurs pastel
+        </div>
+        <p class="theme-cost">
+          Coût : <span class="price">6 ⭐</span>
+        </p>
+        <div class="theme-actions">
+          <button class="btn-main" id="buy-arc_en_ciel">Débloquer</button>
+          <button class="btn-secondary" id="activate-arc_en_ciel">Activer</button>
+        </div>
+        <p class="theme-status" id="status-arc_en_ciel"></p>
+      </div>
+
+      <!-- Forêt magique -->
+      <div class="theme-card" data-theme-id="foret_magique">
+        <div class="theme-header">
+          <h3>🌿 Forêt magique</h3>
+          <div class="theme-tag">Nature</div>
+        </div>
+        <div class="theme-preview" style="background: linear-gradient(135deg,#dcfce7,#bbf7d0,#fefce8);">
+          Vert & nature
+        </div>
+        <p class="theme-cost">
+          Coût : <span class="price">8 ⭐</span>
+        </p>
+        <div class="theme-actions">
+          <button class="btn-main" id="buy-foret_magique">Débloquer</button>
+          <button class="btn-secondary" id="activate-foret_magique">Activer</button>
+        </div>
+        <p class="theme-status" id="status-foret_magique"></p>
+      </div>
+
+      <!-- Glacier bleu -->
+      <div class="theme-card" data-theme-id="glacier_bleu">
+        <div class="theme-header">
+          <h3>🧊 Glacier bleu</h3>
+          <div class="theme-tag">Givré</div>
+        </div>
+        <div class="theme-preview" style="background: linear-gradient(135deg,#e0f2fe,#bae6fd,#f5f3ff);">
+          Bleu & neige
+        </div>
+        <p class="theme-cost">
+          Coût : <span class="price">8 ⭐</span>
+        </p>
+        <div class="theme-actions">
+          <button class="btn-main" id="buy-glacier_bleu">Débloquer</button>
+          <button class="btn-secondary" id="activate-glacier_bleu">Activer</button>
+        </div>
+        <p class="theme-status" id="status-glacier_bleu"></p>
+      </div>
+
+      <!-- Galaxie -->
+      <div class="theme-card" data-theme-id="galaxie">
+        <div class="theme-header">
+          <h3>🚀 Galaxie</h3>
+          <div class="theme-tag">Espace</div>
+        </div>
+        <div class="theme-preview" style="background: radial-gradient(circle at top,#312e81,#020617);">
+          Violet & étoiles
+        </div>
+        <p class="theme-cost">
+          Coût : <span class="price">10 ⭐</span>
+        </p>
+        <div class="theme-actions">
+          <button class="btn-main" id="buy-galaxie">Débloquer</button>
+          <button class="btn-secondary" id="activate-galaxie">Activer</button>
+        </div>
+        <p class="theme-status" id="status-galaxie"></p>
+      </div>
+
+      <!-- Studio des savoirs -->
+      <div class="theme-card" data-theme-id="studio_savoirs">
+        <div class="theme-header">
+          <h3>📚 Studio des savoirs</h3>
+          <div class="theme-tag">Classique</div>
+        </div>
+        <div class="theme-preview" style="background: linear-gradient(135deg,#f5f3ff,#e5e7eb,#fef9c3);">
+          Sobre & studieux
+        </div>
+        <p class="theme-cost">
+          Coût : <span class="price">10 ⭐</span>
+        </p>
+        <div class="theme-actions">
+          <button class="btn-main" id="buy-studio_savoirs">Débloquer</button>
+          <button class="btn-secondary" id="activate-studio_savoirs">Activer</button>
+        </div>
+        <p class="theme-status" id="status-studio_savoirs"></p>
+      </div>
+
+    </section>
+
+  </div>
+</main>
+
+<script>
+  const STARS_KEY = "stars_v1";
+  const THEMES_OWNED_KEY = "themes_owned_v1";
+  const THEME_ACTIVE_KEY = "theme_active_v1";
+
+  const THEMES = {
+    default: {
+      "--bg-main": "#e0f2fe",
+      "--bg-gradient-1": "#eef2ff",
+      "--bg-gradient-2": "#e0f2fe",
+      "--card-light": "#ffffff",
+      "--card-soft": "#f8fafc",
+      "--accent": "#fb923c",
+      "--accent-strong": "#ea580c",
+      "--accent-soft": "#fed7aa",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#3b82f6",
+      "--text-main": "#0f172a",
+      "--text-muted": "#64748b"
+    },
+    arc_en_ciel: {
+      "--bg-main": "#ffeef7",
+      "--bg-gradient-1": "#fee2e2",
+      "--bg-gradient-2": "#fef9c3",
+      "--accent": "#ec4899",
+      "--accent-strong": "#db2777",
+      "--accent-soft": "#f9a8d4",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#6366f1"
+    },
+    foret_magique: {
+      "--bg-main": "#dcfce7",
+      "--bg-gradient-1": "#bbf7d0",
+      "--bg-gradient-2": "#fefce8",
+      "--accent": "#22c55e",
+      "--accent-strong": "#15803d",
+      "--accent-soft": "#bbf7d0",
+      "--accent-alt": "#16a34a",
+      "--accent-blue": "#0ea5e9"
+    },
+    glacier_bleu: {
+      "--bg-main": "#e0f2fe",
+      "--bg-gradient-1": "#dbeafe",
+      "--bg-gradient-2": "#f5f3ff",
+      "--accent": "#0ea5e9",
+      "--accent-strong": "#0369a1",
+      "--accent-soft": "#bae6fd",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#2563eb"
+    },
+    galaxie: {
+      "--bg-main": "#020617",
+      "--bg-gradient-1": "#1e293b",
+      "--bg-gradient-2": "#020617",
+      "--card-light": "#0b1220",
+      "--card-soft": "#020617",
+      "--accent": "#6366f1",
+      "--accent-strong": "#4f46e5",
+      "--accent-soft": "#a5b4fc",
+      "--accent-alt": "#facc15",
+      "--accent-blue": "#4f46e5",
+      "--text-main": "#e5e7eb",
+      "--text-muted": "#9ca3af"
+    },
+    studio_savoirs: {
+      "--bg-main": "#e5e7eb",
+      "--bg-gradient-1": "#f5f3ff",
+      "--bg-gradient-2": "#fef9c3",
+      "--card-light": "#f9fafb",
+      "--card-soft": "#f3f4f6",
+      "--accent": "#f97316",
+      "--accent-strong": "#ea580c",
+      "--accent-soft": "#fed7aa",
+      "--accent-alt": "#22c55e",
+      "--accent-blue": "#3b82f6",
+      "--text-main": "#111827",
+      "--text-muted": "#6b7280"
+    }
+  };
+
+  const THEME_PRICES = {
+    arc_en_ciel: 6,
+    foret_magique: 8,
+    glacier_bleu: 8,
+    galaxie: 10,
+    studio_savoirs: 10
+  };
+
+  function getStars() {
+    const v = parseInt(localStorage.getItem(STARS_KEY) || "0", 10);
+    return isNaN(v) ? 0 : v;
+  }
+
+  function setStars(v) {
+    const value = Math.max(0, v);
+    localStorage.setItem(STARS_KEY, String(value));
+    updateStarDisplay();
+  }
+
+  function updateStarDisplay() {
+    const el = document.getElementById("starCount");
+    if (el) el.textContent = getStars();
+  }
+
+  function getOwnedThemes() {
+    const raw = localStorage.getItem(THEMES_OWNED_KEY);
+    if (!raw) return [];
+    try {
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function setOwnedThemes(list) {
+    localStorage.setItem(THEMES_OWNED_KEY, JSON.stringify(list));
+  }
+
+  function getActiveTheme() {
+    return localStorage.getItem(THEME_ACTIVE_KEY) || "default";
+  }
+
+  function setActiveTheme(id) {
+    localStorage.setItem(THEME_ACTIVE_KEY, id);
+    applyTheme(id);
+    refreshThemeCards();
+  }
+
+  function applyTheme(id) {
+    const theme = THEMES[id] || THEMES.default;
+    const root = document.documentElement;
+    Object.entries(theme).forEach(([k, v]) => {
+      root.style.setProperty(k, v);
+    });
+  }
+
+  function ensureDefaults() {
+    let owned = getOwnedThemes();
+    if (!owned.includes("default")) {
+      owned.push("default");
+      setOwnedThemes(owned);
+    }
+    if (!localStorage.getItem(THEME_ACTIVE_KEY)) {
+      localStorage.setItem(THEME_ACTIVE_KEY, "default");
+    }
+  }
+
+  function refreshThemeCards() {
+    const owned = getOwnedThemes();
+    const active = getActiveTheme();
+    const allIds = ["arc_en_ciel", "foret_magique", "glacier_bleu", "galaxie", "studio_savoirs"];
+
+    allIds.forEach(id => {
+      const price = THEME_PRICES[id];
+      const buyBtn = document.getElementById("buy-" + id);
+      const actBtn = document.getElementById("activate-" + id);
+      const status = document.getElementById("status-" + id);
+
+      if (!buyBtn || !actBtn || !status) return;
+
+      const isOwned = owned.includes(id);
+      const isActive = active === id;
+
+      if (!isOwned) {
+        buyBtn.disabled = false;
+        actBtn.disabled = true;
+        status.textContent = "Thème à débloquer.";
+        status.className = "theme-status locked";
+      } else {
+        buyBtn.disabled = true;
+        actBtn.disabled = isActive;
+        status.className = "theme-status";
+        if (isActive) {
+          status.textContent = "Thème actuellement utilisé.";
+          status.classList.add("active");
+        } else {
+          status.textContent = "Thème débloqué. Tu peux l'activer.";
+        }
+      }
+    });
+  }
+
+  function handleBuy(themeId) {
+    const price = THEME_PRICES[themeId];
+    if (price == null) return;
+
+    const current = getStars();
+    if (current < price) {
+      alert("Tu n'as pas assez d'étoiles pour ce thème.\nIl t'en manque " + (price - current) + ".");
+      return;
+    }
+
+    const owned = getOwnedThemes();
+    if (!owned.includes(themeId)) {
+      owned.push(themeId);
+      setOwnedThemes(owned);
+      setStars(current - price);
+      refreshThemeCards();
+    }
+  }
+
+  function attachEvents() {
+    const ids = ["arc_en_ciel", "foret_magique", "glacier_bleu", "galaxie", "studio_savoirs"];
+    ids.forEach(id => {
+      const buyBtn = document.getElementById("buy-" + id);
+      const actBtn = document.getElementById("activate-" + id);
+      if (buyBtn) buyBtn.addEventListener("click", () => handleBuy(id));
+      if (actBtn) actBtn.addEventListener("click", () => setActiveTheme(id));
+    });
+  }
+
+  function init() {
+    ensureDefaults();
+    applyTheme(getActiveTheme());
+    updateStarDisplay();
+    attachEvents();
+    refreshThemeCards();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>
+
+</body>
+</html>

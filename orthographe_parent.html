@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Espace Parent – Orthographe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    :root {
+      --bg-main: #e0f2fe;
+      --bg-gradient-1: #eef2ff;
+      --bg-gradient-2: #e0f2fe;
+
+      --card-light: #ffffff;
+      --card-soft: #f8fafc;
+
+      --accent: #fb923c;
+      --accent-strong: #ea580c;
+      --accent-soft: #fed7aa;
+      --accent-blue: #3b82f6;
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+
+      --border-subtle: rgba(148, 163, 184, 0.6);
+
+      --radius-lg: 20px;
+      --radius-pill: 999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, var(--bg-gradient-1), var(--bg-main)),
+        radial-gradient(circle at bottom, var(--bg-gradient-2), #ffffff);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #f9fafb;
+      padding: 0.8rem 1.4rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .header-inner {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top, #4f46e5, #1e1b4b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .header-title {
+      font-size: 1.1rem;
+      font-weight: 650;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #cbd5f5;
+    }
+
+    .header-right a {
+      text-decoration: none;
+    }
+
+    .btn-retour {
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-pill);
+      background: radial-gradient(circle at top left, rgba(251, 146, 60, 0.4), rgba(15, 23, 42, 1));
+      color: #fefce8;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-retour span.icon {
+      font-size: 1rem;
+    }
+
+    /* PAGE */
+    main {
+      flex: 1;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 1.2rem auto 1.8rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--card-light);
+      border-radius: var(--radius-lg);
+      padding: 1.2rem 1.4rem;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 1rem;
+    }
+
+    .card h1,
+    .card h2 {
+      margin-top: 0;
+    }
+
+    .card h1 {
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .card h1 .icon {
+      font-size: 1.3rem;
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      margin-top: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .small {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      padding: 0.6rem 0.75rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      resize: vertical;
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.6);
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .options-row label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="checkbox"] {
+      accent-color: var(--accent);
+    }
+
+    button {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 0.5rem 1.2rem;
+      background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      font-weight: 650;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    #saveStatus {
+      margin-top: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    .child-info {
+      background: var(--card-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 0.8rem 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="header-icon">📖</div>
+      <div>
+        <div class="header-title">Orthographe – Espace Parent</div>
+        <div class="header-sub">Préparez les dictées pour votre enfant.</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a href="parent_accueil.html">
+        <button class="btn-retour" type="button">
+          <span class="icon">⟵</span>
+          <span>Retour espace Parent</span>
+        </button>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="page">
+
+    <section class="card">
+      <h1><span class="icon">🔧</span> Préparer une dictée</h1>
+      <p>
+        Saisissez ici les <strong>mots ou petites phrases</strong> que vous voulez faire écrire à votre enfant.
+        Chaque ligne correspond à <strong>un mot ou une phrase</strong> de la dictée.
+      </p>
+      <p class="small">
+        Exemple :<br>
+        <em>chocolat<br>
+        attention<br>
+        une belle histoire<br>
+        extraordinaire</em>
+      </p>
+
+      <h2>Liste de mots / phrases</h2>
+      <textarea id="wordsInput" placeholder="Un mot ou une phrase par ligne..."></textarea>
+
+      <div class="options-row">
+        <label>
+          <input type="checkbox" id="shuffleCheckbox">
+          Mélanger l’ordre des mots
+        </label>
+      </div>
+
+      <button type="button" onclick="saveOrthoConfig()">Enregistrer la dictée</button>
+      <p id="saveStatus"></p>
+    </section>
+
+    <section class="card" id="resultats">
+      <h2>Résultats (à venir)</h2>
+      <p class="small">
+        Plus tard, cette section pourra afficher un récapitulatif des dernières dictées (score, erreurs fréquentes…).
+        Pour l’instant, les résultats sont visibles directement sur la page enfant.
+      </p>
+    </section>
+
+    <section class="child-info">
+      💡 <strong>Comment expliquer cela à votre enfant ?</strong><br>
+      Dites-lui : “Je prépare la dictée ici. Quand je te dis que c’est prêt, tu vas dans ton espace Enfant,
+      puis tu cliques sur <em>‘Dictée – Orthographe’</em> pour faire l’exercice.”
+    </section>
+
+  </div>
+</main>
+
+<script>
+  const ORTHO_CONFIG_KEY = "orthoConfig_v1";
+
+  function loadOrthoConfig() {
+    const saved = localStorage.getItem(ORTHO_CONFIG_KEY);
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function initOrthoUI() {
+    const cfg = loadOrthoConfig();
+    const textarea = document.getElementById("wordsInput");
+    const shuffleCheckbox = document.getElementById("shuffleCheckbox");
+
+    if (cfg && Array.isArray(cfg.words)) {
+      textarea.value = cfg.words.join("\n");
+    }
+    if (cfg && typeof cfg.shuffle === "boolean") {
+      shuffleCheckbox.checked = cfg.shuffle;
+    }
+  }
+
+  function saveOrthoConfig() {
+    const textarea = document.getElementById("wordsInput");
+    const shuffleCheckbox = document.getElementById("shuffleCheckbox");
+    const statusEl = document.getElementById("saveStatus");
+
+    const lines = textarea.value
+      .split("\n")
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    if (lines.length === 0) {
+      statusEl.textContent = "Veuillez saisir au moins un mot ou une phrase.";
+      return;
+    }
+
+    const config = {
+      words: lines,
+      shuffle: shuffleCheckbox.checked
+    };
+
+    localStorage.setItem(ORTHO_CONFIG_KEY, JSON.stringify(config));
+    statusEl.textContent = "Dictée enregistrée. Votre enfant peut maintenant la faire sur la page d’orthographe.";
+  }
+
+  function init() {
+    initOrthoUI();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>
+
+</body>
+</html>
