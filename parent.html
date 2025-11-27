@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Espace parent – Mes leçons</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 16px 40px;
+      background: #f6f6fb;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      text-align: center;
+      margin-top: 0;
+    }
+    .block {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      margin-top: 20px;
+    }
+    .block h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+    .info {
+      color: #444;
+      font-size: 0.9rem;
+      margin-top: -5px;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin: 6px 0;
+    }
+    a {
+      color: #3344aa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Espace parent – Mes leçons</h1>
+  <p class="subtitle">
+    Juste pour toi : voir ce que tu as comme leçons et ce que tu veux préparer 📋
+  </p>
+
+  <!-- 🧒 ACCÈS DIRECT AUX MODES ENFANT -->
+  <div class="block">
+    <h2>🧒 Accès aux modes enfant</h2>
+    <p class="info">Ouvre les entraînements autonomes utilisés par ton enfant.</p>
+    <ul>
+      <li><a href="geo_auto.html">Mode enfant – Géographie (jeu autonome)</a></li>
+      <li><a href="tables_auto.html">Mode enfant – Tables de multiplications</a></li>
+    </ul>
+  </div>
+  <!-- 🔚 FIN ACCÈS ENFANT -->
+
+  <!-- 📊 STATISTIQUES – TABLES -->
+  <div class="block">
+    <h2>📊 Statistiques – Tables de multiplications</h2>
+    <p class="info">Résumé des entraînements faits en mode enfant.</p>
+
+    <ul>
+      <li>Total de sessions : <strong id="math-total-sessions">0</strong></li>
+      <li>Total de questions posées : <strong id="math-total-questions">0</strong></li>
+      <li>Total de bonnes réponses : <strong id="math-total-correct">0</strong></li>
+      <li>Dernière session : <span id="math-last-session">Aucune donnée</span></li>
+    </ul>
+  </div>
+  <!-- 🔚 FIN STATS TABLES -->
+
+  <!-- 📍 GÉOGRAPHIE -->
+  <div class="block">
+    <h2>📍 Géographie</h2>
+    <p class="info">Cocher ce que tu veux travailler avec ton enfant.</p>
+
+    <label><input type="checkbox" id="map"> Cartes</label>
+    <label><input type="checkbox" id="capitals"> Capitales</label>
+    <label><input type="checkbox" id="provinces"> Provinces</label>
+    <label><input type="checkbox" id="rivers"> Fleuves et rivières</label>
+  </div>
+
+  <!-- ✏️ CONJUGAISON -->
+  <div class="block">
+    <h2>✏️ Conjugaison</h2>
+    <p class="info">Cocher ce que tu veux travailler avec ton enfant.</p>
+
+    <label><input type="checkbox" id="verbs-present"> Présent</label>
+    <label><input type="checkbox" id="verbs-past"> Passé</label>
+    <label><input type="checkbox" id="verbs-future"> Futur</label>
+  </div>
+
+  <!-- 📝 ORTHOGRAPHE -->
+  <div class="block">
+    <h2>📝 Orthographe</h2>
+    <p class="info">Cocher ce que tu veux travailler avec ton enfant.</p>
+
+    <label><input type="checkbox" id="ortho-homophones"> Homophones</label>
+    <label><input type="checkbox" id="ortho-dictation"> Dictée</label>
+  </div>
+
+  <script>
+    /* === SAUVEGARDE DES CHOIX PARENT === */
+    const STORAGE_KEY = "parent_choices";
+    const checkboxes = document.querySelectorAll("input[type=checkbox]");
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      const state = JSON.parse(saved);
+      checkboxes.forEach(cb => {
+        if (state[cb.id] !== undefined) cb.checked = state[cb.id];
+      });
+    }
+
+    function saveState() {
+      const state = {};
+      checkboxes.forEach(cb => {
+        state[cb.id] = cb.checked;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener("change", saveState));
+    loadState();
+
+    /* === 📊 STATISTIQUES MATHS === */
+    (function loadMathStats() {
+      const raw = localStorage.getItem("math_tables_stats");
+      if (!raw) return;
+
+      try {
+        const data = JSON.parse(raw);
+
+        document.getElementById("math-total-sessions").textContent = data.totalSessions || 0;
+        document.getElementById("math-total-questions").textContent = data.totalQuestions || 0;
+        document.getElementById("math-total-correct").textContent = data.totalCorrect || 0;
+
+        if (data.lastSession) {
+          const d = new Date(data.lastSession.date || Date.now());
+          const dateStr = d.toLocaleString("fr-BE", {
+            year: "numeric", month: "2-digit", day: "2-digit",
+            hour: "2-digit", minute: "2-digit"
+          });
+          const info = `${dateStr} – ${data.lastSession.correct}/${data.lastSession.totalQuestions}`
+            + (data.lastSession.stoppedEarly ? " (arrêt anticipé)" : "");
+          document.getElementById("math-last-session").textContent = info;
+        }
+      } catch (e) {
+        console.error("Erreur stats math :", e);
+      }
+    })();
+  </script>
+
+</body>
+</html>

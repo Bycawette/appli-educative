@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Conjugaison – Verbes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* Style enfant, cohérent avec les autres pages, couleur conjugaison (orange vif) */
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f6fb;
+  color: #222;
+}
+header {
+  background: #FF8A00; /* Orange vif pour la conjugaison */
+  color: #fff;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.container {
+  max-width: 800px;
+  margin: 1rem auto;
+  background: #ffffff;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+button {
+  background: #FF8A00;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+button:hover { background: #e67600; }
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+#feedback { font-weight:bold; margin-top: 8px; }
+ul { padding-left: 20px; }
+
+small {
+  color:#555;
+}
+
+/* barre d'info & progression, comme pour les tables */
+.info-bar {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin:8px 0;
+  font-weight:bold;
+}
+.progress {
+  width:100%;
+  height:8px;
+  background:#ffe0bf;
+  border-radius:999px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.progress-inner {
+  height:100%;
+  width:0%;
+  background:#FF8A00;
+  transition: width 0.2s ease-out;
+}
+</style>
+</head>
+
+<body>
+
+<header>Conjugaison – Verbes 🔤</header>
+
+<div style="margin:10px;">
+  <a href="index.html"
+     style="display:inline-block;background:#FF8A00;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
+    ⟵ Retour à l'accueil
+  </a>
+</div>
+
+<!-- MODE "PARENT" = simple explication, pas de réglages -->
+<div class="container">
+  <h2>Mode parent – Fonctionnement</h2>
+  <p>
+    Ce module est <strong>totalement autonome</strong> :
+  </p>
+  <ul>
+    <li>L’ordinateur choisit <strong>aléatoirement</strong> le verbe, le temps et la personne.</li>
+    <li>Les temps travaillés : <strong>présent, imparfait, futur simple, passé composé, impératif</strong>.</li>
+    <li>L’enfant répond à <strong>20 questions</strong>.</li>
+    <li>À chaque erreur, la <strong>bonne réponse</strong> s’affiche pour qu’il voie sa faute.</li>
+  </ul>
+  <p>
+    Quand vous êtes prêt, laissez l’enfant utiliser le <strong>mode enfant</strong> ci-dessous.
+  </p>
+</div>
+
+<!-- MODE ENFANT -->
+<div class="container" id="exerciseSection">
+  <h2>Mode enfant – Conjugaison</h2>
+  <p style="font-size:1.05rem;margin-top:0;">
+    Conjugue les verbes comme demandé. ✏️
+  </p>
+
+  <button id="startBtn">Commencer l’exercice (20 questions)</button>
+
+  <div id="exerciseContent" style="display:none; margin-top:10px;">
+    <div class="info-bar">
+      <span>Question : <span id="questionIndex">0</span> / <span id="questionTotal">0</span></span>
+      <span>Score : <span id="score">0</span></span>
+    </div>
+
+    <div class="progress">
+      <div class="progress-inner" id="progressInner"></div>
+    </div>
+
+    <p id="questionText" style="font-size:1.2rem;font-weight:bold;margin-top:8px;">
+      Les questions apparaîtront ici.
+    </p>
+    <p id="questionHelp"><small>Écris ta réponse dans la zone ci-dessous.</small></p>
+
+    <input type="text" id="childAnswer" placeholder="Ta réponse">
+    <button id="validateBtn">Valider</button>
+
+    <p id="feedback"></p>
+  </div>
+</div>
+
+<!-- RESULTATS -->
+<div class="container" id="result" style="display:none;">
+  <h2>Résultat</h2>
+  <p id="finalScore"></p>
+  <p><strong>Formes à retravailler :</strong></p>
+  <ul id="mistakes"></ul>
+  <button onclick="restart()">Recommencer</button>
+</div>
+
+<script>
+// ===================== DONNÉES & CONJUGAISONS =====================
+
+var TOTAL_QUESTIONS = 20;
+
+var PRONOUNS = ["je","tu","il","elle","on","nous","vous","ils","elles"];
+
+var TENSES = [
+  { key: "present", label: "Présent" },
+  { key: "imparfait", label: "Imparfait" },
+  { key: "futur", label: "Futur simple" },
+  { key: "passeCompose", label: "Passé composé" },
+  { key: "imperatif", label: "Impératif" }
+];
+
+// Liste courte de verbes fréquents
+var VERBS = [
+  {
+    infinitif: "être",
+    conjugations: {
+      present: {
+        je: "je suis",
+        tu: "tu es",
+        il: "il est",
+        elle: "elle est",
+        on: "on est",
+        nous: "nous sommes",
+        vous: "vous êtes",
+        ils: "ils sont",
+        elles: "elles sont"
+      },
+      imparfait: {
+        je: "j'étais",
+        tu: "tu étais",
+        il: "il était",
+        elle: "elle était",
+        on: "on était",
+        nous: "nous étions",
+        vous: "vous étiez",
+        ils: "ils étaient",
+        elles: "elles étaient"
+      },
+      futur: {
+        je: "je serai",
+        tu: "tu seras",
+        il: "il sera",
+        elle: "elle sera",
+        on: "on sera",
+        nous: "nous serons",
+        vous: "vous serez",
+        ils: "ils seront",
+        elles: "elles seront"
+      },
+      passeCompose: {
+        je: "j'ai été",
+        tu: "tu as été",
+        il: "il a été",
+        elle: "elle a été",
+        on: "on a été",
+        nous: "nous avons été",
+        vous: "vous avez été",
+        ils: "ils ont été",
+        elles: "elles ont été"
+      },
+      imperatif: {
+        tu: "sois",
+        nous: "soyons",
+        vous: "soyez"
+      }
+    }
+  },
+  {
+    infinitif: "avoir",
+    conjugations: {
+      present: {
+        je: "j'ai",
+        tu: "tu as",
+        il: "il a",
+        elle: "elle a",
+        on: "on a",
+        nous: "nous avons",
+        vous: "vous avez",
+        ils: "ils ont",
+        elles: "elles ont"
+      },
+      imparfait: {
+        je: "j'avais",
+        tu: "tu avais",
+        il: "il avait",
+        elle: "elle avait",
+        on: "on avait",
+        nous: "nous avions",
+        vous: "vous aviez",
+        ils: "ils avaient",
+        elles: "elles avaient"
+      },
+      futur: {
+        je: "j'aurai",
+        tu: "tu auras",
+        il: "il aura",
+        elle: "elle aura",
+        on: "on aura",
+        nous: "nous aurons",
+        vous: "vous aurez",
+        ils: "ils auront",
+        elles: "elles auront"
+      },
+      passeCompose: {
+        je: "j'ai eu",
+        tu: "tu as eu",
+        il: "il a eu",
+        elle: "elle a eu",
+        on: "on a eu",
+        nous: "nous avons eu",
+        vous: "vous avez eu",
+        ils: "ils ont eu",
+        elles: "elles ont eu"
+      },
+      imperatif: {
+        tu: "aie",
+        nous: "ayons",
+        vous: "ayez"
+      }
+    }
+  },
+  {
+    infinitif: "aller",
+    conjugations: {
+      present: {
+        je: "je vais",
+        tu: "tu vas",
+        il: "il va",
+        elle: "elle va",
+        on: "on va",
+        nous: "nous allons",
+        vous: "vous allez",
+        ils: "ils vont",
+        elles: "elles vont"
+      },
+      imparfait: {
+        je: "j'allais",
+        tu: "tu allais",
+        il: "il allait",
+        elle: "elle allait",
+        on: "on allait",
+        nous: "nous allions",
+        vous: "vous alliez",
+        ils: "ils allaient",
+        elles: "elles allaient"
+      },
+      futur: {
+        je: "j'irai",
+        tu: "tu iras",
+        il: "il ira",
+        elle: "elle ira",
+        on: "on ira",
+        nous: "nous irons",
+        vous: "vous irez",
+        ils: "ils iront",
+        elles: "elles iront"
+      },
+      // on laisse aller sans passé composé ici pour éviter la gestion des accords
+      imperatif: {
+        tu: "va",
+        nous: "allons",
+        vous: "allez"
+      }
+    }
+  },
+  {
+    infinitif: "faire",
+    conjugations: {
+      present: {
+        je: "je fais",
+        tu: "tu fais",
+        il: "il fait",
+        elle: "elle fait",
+        on: "on fait",
+        nous: "nous faisons",
+        vous: "vous faites",
+        ils: "ils font",
+        elles: "elles font"
+      },
+      imparfait: {
+        je: "je faisais",
+        tu: "tu faisais",
+        il: "il faisait",
+        elle: "elle faisait",
+        on: "on faisait",
+        nous: "nous faisions",
+        vous: "vous faisiez",
+        ils: "ils faisaient",
+        elles: "elles faisaient"
+      },
+      futur: {
+        je: "je ferai",
+        tu: "tu feras",
+        il: "il fera",
+        elle: "elle fera",
+        on: "on fera",
+        nous: "nous ferons",
+        vous: "vous ferez",
+        ils: "ils feront",
+        elles: "elles feront"
+      },
+      passeCompose: {
+        je: "j'ai fait",
+        tu: "tu as fait",
+        il: "il a fait",
+        elle: "elle a fait",
+        on: "on a fait",
+        nous: "nous avons fait",
+        vous: "vous avez fait",
+        ils: "ils ont fait",
+        elles: "elles ont fait"
+      },
+      imperatif: {
+        tu: "fais",
+        nous: "faisons",
+        vous: "faites"
+      }
+    }
+  },
+  {
+    infinitif: "parler",
+    conjugations: {
+      present: {
+        je: "je parle",
+        tu: "tu parles",
+        il: "il parle",
+        elle: "elle parle",
+        on: "on parle",
+        nous: "nous parlons",
+        vous: "vous parlez",
+        ils: "ils parlent",
+        elles: "elles parlent"
+      },
+      imparfait: {
+        je: "je parlais",
+        tu: "tu parlais",
+        il: "il parlait",
+        elle: "elle parlait",
+        on: "on parlait",
+        nous: "nous parlions",
+        vous: "vous parliez",
+        ils: "ils parlaient",
+        elles: "elles parlaient"
+      },
+      futur: {
+        je: "je parlerai",
+        tu: "tu parleras",
+        il: "il parlera",
+        elle: "elle parlera",
+        on: "on parlera",
+        nous: "nous parlerons",
+        vous: "vous parlerez",
+        ils: "ils parleront",
+        elles: "elles parleront"
+      },
+      passeCompose: {
+        je: "j'ai parlé",
+        tu: "tu as parlé",
+        il: "il a parlé",
+        elle: "elle a parlé",
+        on: "on a parlé",
+        nous: "nous avons parlé",
+        vous: "vous avez parlé",
+        ils: "ils ont parlé",
+        elles: "elles ont parlé"
+      },
+      imperatif: {
+        tu: "parle",
+        nous: "parlons",
+        vous: "parlez"
+      }
+    }
+  },
+  {
+    infinitif: "finir",
+    conjugations: {
+      present: {
+        je: "je finis",
+        tu: "tu finis",
+        il: "il finit",
+        elle: "elle finit",
+        on: "on finit",
+        nous: "nous finissons",
+        vous: "vous finissez",
+        ils: "ils finissent",
+        elles: "elles finissent"
+      },
+      imparfait: {
+        je: "je finissais",
+        tu: "tu finissais",
+        il: "il finissait",
+        elle: "elle finissait",
+        on: "on finissait",
+        nous: "nous finissions",
+        vous: "vous finissiez",
+        ils: "ils finissaient",
+        elles: "elles finissaient"
+      },
+      futur: {
+        je: "je finirai",
+        tu: "tu finiras",
+        il: "il finira",
+        elle: "elle finira",
+        on: "on finira",
+        nous: "nous finirons",
+        vous: "vous finirez",
+        ils: "ils finiront",
+        elles: "elles finiront"
+      },
+      passeCompose: {
+        je: "j'ai fini",
+        tu: "tu as fini",
+        il: "il a fini",
+        elle: "elle a fini",
+        on: "on a fini",
+        nous: "nous avons fini",
+        vous: "vous avez fini",
+        ils: "ils ont fini",
+        elles: "elles ont fini"
+      },
+      imperatif: {
+        tu: "finis",
+        nous: "finissons",
+        vous: "finissez"
+      }
+    }
+  },
+  {
+    infinitif: "prendre",
+    conjugations: {
+      present: {
+        je: "je prends",
+        tu: "tu prends",
+        il: "il prend",
+        elle: "elle prend",
+        on: "on prend",
+        nous: "nous prenons",
+        vous: "vous prenez",
+        ils: "ils prennent",
+        elles: "elles prennent"
+      },
+      imparfait: {
+        je: "je prenais",
+        tu: "tu prenais",
+        il: "il prenait",
+        elle: "elle prenait",
+        on: "on prenait",
+        nous: "nous prenions",
+        vous: "vous preniez",
+        ils: "ils prenaient",
+        elles: "elles prenaient"
+      },
+      futur: {
+        je: "je prendrai",
+        tu: "tu prendras",
+        il: "il prendra",
+        elle: "elle prendra",
+        on: "on prendra",
+        nous: "nous prendrons",
+        vous: "vous prendrez",
+        ils: "ils prendront",
+        elles: "elles prendront"
+      },
+      passeCompose: {
+        je: "j'ai pris",
+        tu: "tu as pris",
+        il: "il a pris",
+        elle: "elle a pris",
+        on: "on a pris",
+        nous: "nous avons pris",
+        vous: "vous avez pris",
+        ils: "ils ont pris",
+        elles: "elles ont pris"
+      },
+      imperatif: {
+        tu: "prends",
+        nous: "prenons",
+        vous: "prenez"
+      }
+    }
+  },
+  {
+    infinitif: "venir",
+    conjugations: {
+      present: {
+        je: "je viens",
+        tu: "tu viens",
+        il: "il vient",
+        elle: "elle vient",
+        on: "on vient",
+        nous: "nous venons",
+        vous: "vous venez",
+        ils: "ils viennent",
+        elles: "elles viennent"
+      },
+      imparfait: {
+        je: "je venais",
+        tu: "tu venais",
+        il: "il venait",
+        elle: "elle venait",
+        on: "on venait",
+        nous: "nous venions",
+        vous: "vous veniez",
+        ils: "ils venaient",
+        elles: "elles venaient"
+      },
+      futur: {
+        je: "je viendrai",
+        tu: "tu viendras",
+        il: "il viendra",
+        elle: "elle viendra",
+        on: "on viendra",
+        nous: "nous viendrons",
+        vous: "vous viendrez",
+        ils: "ils viendront",
+        elles: "elles viendront"
+      },
+      // on laisse sans passé composé pour éviter gestion des accords
+      imperatif: {
+        tu: "viens",
+        nous: "venons",
+        vous: "venez"
+      }
+    }
+  }
+];
+
+// ===================== ÉTAT DE L'EXERCICE =====================
+
+var questions = [];
+var currentIndex = 0;
+var score = 0;
+var mistakesList = [];
+
+// ===================== UTILITAIRES =====================
+
+function randChoice(arr) {
+  var idx = Math.floor(Math.random() * arr.length);
+  return arr[idx];
+}
+
+function shuffleArray(arr) {
+  var i, j, tmp;
+  for (i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+  }
+  return arr;
+}
+
+function normalize(str) {
+  return str
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// ===================== GÉNÉRATION DES QUESTIONS =====================
+
+function buildQuestions() {
+  questions = [];
+  currentIndex = 0;
+  score = 0;
+  mistakesList = [];
+
+  var usedKeys = {}; // pour limiter les doublons
+
+  var essaisMax = 200;
+  var essais = 0;
+
+  while (questions.length < TOTAL_QUESTIONS && essais < essaisMax) {
+    essais++;
+
+    var tense = randChoice(TENSES);
+    var verbsForTense = [];
+    var i;
+
+    // on ne garde que les verbes qui ont ce temps
+    for (i = 0; i < VERBS.length; i++) {
+      if (VERBS[i].conjugations[tense.key]) {
+        verbsForTense.push(VERBS[i]);
+      }
+    }
+    if (verbsForTense.length === 0) continue;
+
+    var verb = randChoice(verbsForTense);
+
+    var pronounsList;
+    if (tense.key === "imperatif") {
+      // à l'impératif, on utilise seulement tu/nous/vous
+      pronounsList = ["tu","nous","vous"];
+    } else {
+      pronounsList = PRONOUNS.slice();
+    }
+
+    // on garde seulement les pronoms qui existent dans la conj
+    var validPronouns = [];
+    for (i = 0; i < pronounsList.length; i++) {
+      var p = pronounsList[i];
+      if (verb.conjugations[tense.key][p]) {
+        validPronouns.push(p);
+      }
+    }
+    if (validPronouns.length === 0) continue;
+
+    var pronoun = randChoice(validPronouns);
+    var expected = verb.conjugations[tense.key][pronoun];
+
+    var key = tense.key + "|" + verb.infinitif + "|" + pronoun;
+    if (usedKeys[key]) continue;
+    usedKeys[key] = true;
+
+    var questionText;
+    var helpText;
+
+    if (tense.key === "imperatif") {
+      // pour l'impératif on peut afficher la personne entre parenthèses
+      questionText =
+        "Conjugue à l'impératif le verbe « " +
+        verb.infinitif +
+        " » avec « " +
+        pronoun +
+        " ».";
+      helpText = "Écris la forme du verbe (par exemple : « " + expected + " »).";
+    } else {
+      questionText =
+        "Conjugue au " +
+        tense.label.toLowerCase() +
+        " le verbe « " +
+        verb.infinitif +
+        " » avec « " +
+        pronoun +
+        " ».";
+      helpText =
+        "Écris la phrase complète avec le pronom et le verbe (par exemple : « " +
+        expected +
+        " »).";
+    }
+
+    questions.push({
+      tenseKey: tense.key,
+      tenseLabel: tense.label,
+      verb: verb.infinitif,
+      pronoun: pronoun,
+      expected: expected,
+      questionText: questionText,
+      helpText: helpText
+    });
+  }
+
+  shuffleArray(questions);
+}
+
+// ===================== AFFICHAGE & LOGIQUE =====================
+
+function updateProgress() {
+  var total = questions.length;
+  var idx = currentIndex;
+  if (idx > total) idx = total;
+  document.getElementById("questionIndex").textContent = String(
+    idx < 1 ? 0 : idx
+  );
+  document.getElementById("questionTotal").textContent = String(total);
+
+  var percent = total > 0 ? ((idx - 1) / total) * 100 : 0;
+  document.getElementById("progressInner").style.width = percent + "%";
+}
+
+function showCurrentQuestion() {
+  var feedbackEl = document.getElementById("feedback");
+  feedbackEl.textContent = "";
+
+  if (currentIndex >= questions.length) {
+    endExercise();
+    return;
+  }
+
+  var q = questions[currentIndex];
+
+  document.getElementById("questionText").textContent = q.questionText;
+  document.getElementById("questionHelp").innerHTML =
+    "<small>" + q.helpText + "</small>";
+  document.getElementById("childAnswer").value = "";
+  document.getElementById("childAnswer").focus();
+
+  document.getElementById("questionIndex").textContent = String(
+    currentIndex + 1
+  );
+  document.getElementById("questionTotal").textContent = String(
+    questions.length
+  );
+
+  var percent =
+    questions.length > 0 ? (currentIndex / questions.length) * 100 : 0;
+  document.getElementById("progressInner").style.width = percent + "%";
+}
+
+function checkAnswer() {
+  if (currentIndex >= questions.length) return;
+
+  var q = questions[currentIndex];
+  var input = document.getElementById("childAnswer");
+  var val = input.value;
+  var feedbackEl = document.getElementById("feedback");
+
+  if (val.trim() === "") {
+    feedbackEl.textContent =
+      "Écris une réponse avant de valider 🙂";
+    return;
+  }
+
+  var userNorm = normalize(val);
+  var expectedNorm = normalize(q.expected);
+
+  if (userNorm === expectedNorm) {
+    feedbackEl.textContent = "Correct ! ✅";
+    score++;
+    document.getElementById("score").textContent = String(score);
+  } else {
+    feedbackEl.textContent =
+      "Non, la bonne réponse était : « " + q.expected + " »";
+    mistakesList.push({
+      question: q.questionText,
+      expected: q.expected,
+      child: val
+    });
+  }
+
+  currentIndex++;
+  setTimeout(showCurrentQuestion, 1500);
+}
+
+function endExercise() {
+  document.getElementById("exerciseSection").style.display = "none";
+  document.getElementById("result").style.display = "block";
+
+  var total = questions.length;
+  var txt = "Score : " + score + " / " + total;
+  document.getElementById("finalScore").textContent = txt;
+
+  var ul = document.getElementById("mistakes");
+  ul.innerHTML = "";
+  var i;
+  for (i = 0; i < mistakesList.length; i++) {
+    var m = mistakesList[i];
+    var li = document.createElement("li");
+    li.textContent =
+      m.question +
+      " → réponse attendue : \"" +
+      m.expected +
+      "\" (ta réponse : \"" +
+      m.child +
+      "\")";
+    ul.appendChild(li);
+  }
+
+  document.getElementById("progressInner").style.width = "100%";
+}
+
+function restart() {
+  // on revient au mode enfant, prêt à recommencer
+  document.getElementById("result").style.display = "none";
+  document.getElementById("exerciseSection").style.display = "block";
+  document.getElementById("exerciseContent").style.display = "none";
+  document.getElementById("score").textContent = "0";
+  document.getElementById("questionIndex").textContent = "0";
+  document.getElementById("questionTotal").textContent = "0";
+  document.getElementById("progressInner").style.width = "0%";
+}
+
+// ===================== INIT =====================
+
+function startExercise() {
+  buildQuestions();
+  score = 0;
+  currentIndex = 0;
+  document.getElementById("score").textContent = "0";
+  document.getElementById("exerciseContent").style.display = "block";
+  document.getElementById("result").style.display = "none";
+  showCurrentQuestion();
+}
+
+function init() {
+  var btnStart = document.getElementById("startBtn");
+  var btnValidate = document.getElementById("validateBtn");
+  var input = document.getElementById("childAnswer");
+
+  if (btnStart) {
+    btnStart.onclick = startExercise;
+  }
+  if (btnValidate) {
+    btnValidate.onclick = checkAnswer;
+  }
+  if (input) {
+    input.onkeydown = function(e) {
+      e = e || window.event;
+      if (e.key === "Enter" || e.keyCode === 13) {
+        checkAnswer();
+      }
+    };
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jeu des homophones</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 10px 40px;
+      text-align: center;
+      line-height: 1.4;
+      background: #f8f8fc;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    #question {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .choice-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 1rem;
+      min-width: 300px;
+      text-align: left;
+    }
+
+    .choice-btn:hover {
+      background: #ececec;
+    }
+
+    #feedback {
+      font-size: 1rem;
+      min-height: 1.2em;
+      margin-top: 10px;
+    }
+
+    #score {
+      font-size: 0.95rem;
+      color: #444;
+      margin-top: 8px;
+    }
+
+    #nextBtn {
+      margin-top: 15px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #f2f2f2;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    #nextBtn:hover {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Homophones visuels</h1>
+  <p class="subtitle">
+    Choisis la phrase qui utilise le bon mot.  
+    Laisse ta mémoire et ton sens de la phrase t’aider 😉
+  </p>
+
+  <p id="question"><em>Clique sur “Nouveau défi” pour commencer</em></p>
+
+  <div class="choices">
+    <button class="choice-btn" data-index="0"></button>
+    <button class="choice-btn" data-index="1"></button>
+    <button class="choice-btn" data-index="2"></button>
+  </div>
+
+  <p id="feedback"></p>
+  <p id="score"></p>
+
+  <button id="nextBtn">Nouveau défi</button>
+
+  <script>
+    // Homophones fréquents en 5e primaire (Belgique)
+    const homophones = [
+      {
+        type: "et / est",
+        correct: "Il mange et il boit.",
+        variants: ["Il mange est il boit.", "Il mange et il boit ?"]
+      },
+      {
+        type: "et / est",
+        correct: "Le chat est sur la chaise.",
+        variants: ["Le chat et sur la chaise.", "Le chat est sur la chaise ?"]
+      },
+      {
+        type: "a / à",
+        correct: "Il a une nouvelle veste.",
+        variants: ["Il à une nouvelle veste.", "Il a une nouvelle veste ?"]
+      },
+      {
+        type: "a / à",
+        correct: "Elle va à l’école.",
+        variants: ["Elle va a l’école.", "Elle va à l’école ?"]
+      },
+      {
+        type: "on / ont",
+        correct: "Ils ont gagné le match.",
+        variants: ["Ils on gagné le match.", "Ils ont gagné le match ?"]
+      },
+      {
+        type: "on / ont",
+        correct: "On va bientôt partir.",
+        variants: ["Ont va bientôt partir.", "On va bientôt partir ?"]
+      },
+      {
+        type: "son / sont",
+        correct: "Ils sont en retard.",
+        variants: ["Ils son en retard.", "Ils sont en retard ?"]
+      },
+      {
+        type: "son / sont",
+        correct: "C’est son cartable.",
+        variants: ["C’est sont cartable.", "C’est son cartable ?"]
+      }
+    ];
+
+    const questionEl = document.getElementById('question');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const nextBtn = document.getElementById('nextBtn');
+    const buttons = Array.from(document.querySelectorAll('.choice-btn'));
+
+    let current = null;
+    let currentChoices = [];
+    let totalQuestions = 0;
+    let totalCorrect = 0;
+    let hasAnswered = false;
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function updateScore() {
+      if (totalQuestions === 0) {
+        scoreEl.textContent = '';
+        return;
+      }
+      const pct = Math.round((totalCorrect / totalQuestions) * 100);
+      scoreEl.textContent = `Réussites : ${totalCorrect} / ${totalQuestions} (${pct} %)`;
+    }
+
+    function newChallenge() {
+      const index = Math.floor(Math.random() * homophones.length);
+      current = homophones[index];
+
+      questionEl.textContent = `Choisis la phrase correcte (${current.type})`;
+
+      currentChoices = [current.correct, ...current.variants];
+      shuffle(currentChoices);
+
+      buttons.forEach((btn, i) => {
+        btn.textContent = currentChoices[i];
+      });
+
+      feedbackEl.textContent = '';
+      hasAnswered = false;
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!current) {
+          feedbackEl.textContent = "Clique d’abord sur “Nouveau défi”.";
+          return;
+        }
+
+        if (btn.textContent === current.correct) {
+          if (!hasAnswered) {
+            totalQuestions++;
+            totalCorrect++;
+            updateScore();
+            hasAnswered = true;
+          }
+          feedbackEl.textContent = "Bravo 🎉";
+          setTimeout(newChallenge, 900);
+        } else {
+          feedbackEl.textContent = "Regarde bien le sens de la phrase 😊";
+        }
+      });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      totalQuestions++;
+      updateScore();
+      newChallenge();
+    });
+
+    newChallenge();
+  </script>
+</body>
+</html>

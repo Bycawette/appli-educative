@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mathématiques – Tables de multiplication</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* === même base que orthographe.html pour rester cohérent === */
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f6fb;
+  color: #222;
+}
+header {
+  background: #3C6FC0; /* bleu pour les maths, mais même style */
+  color: #fff;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.container {
+  max-width: 800px;
+  margin: 1rem auto;
+  background: #ffffff;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+button {
+  background: #3C6FC0;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+button:hover { background: #3059a0; }
+
+input[type="number"], input[type="text"] {
+  padding: 6px 8px;
+  margin-top: 4px;
+  font-size: 1rem;
+}
+
+label {
+  font-size: 0.95rem;
+}
+
+#feedback { font-weight:bold; margin-top: 8px; }
+ul { padding-left: 20px; }
+
+/* petits ajouts pour rendre ça propre */
+.tables-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 4px;
+}
+.tables-grid label {
+  background:#e9edff;
+  padding:2px 6px;
+  border-radius:4px;
+}
+small {
+  color:#555;
+}
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+.quiz-options button {
+  width: 100%;
+}
+.info-bar {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin:8px 0;
+  font-weight:bold;
+}
+.progress {
+  width:100%;
+  height:8px;
+  background:#dde3f0;
+  border-radius:999px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.progress-inner {
+  height:100%;
+  width:0%;
+  background:#3C6FC0;
+  transition: width 0.2s ease-out;
+}
+</style>
+</head>
+
+<body>
+
+<header>Mathématiques – Tables de multiplication</header>
+
+<div style="margin:10px;">
+  <a href="index.html"
+     style="display:inline-block;background:#3C6FC0;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
+    ⟵ Retour à l'accueil
+  </a>
+</div>
+
+<!-- MODE PARENT -->
+<div class="container">
+  <h2>Mode parent – Réglages</h2>
+
+  <p><strong>Choisir les tables à travailler</strong> (si aucune n’est cochée, toutes seront utilisées) :</p>
+  <div class="tables-grid" id="tablesParent"></div>
+
+  <p style="margin-top:10px;"><strong>Type de questions</strong> :</p>
+  <label><input type="radio" name="mode" value="mixte" checked> Mixte (directes + chercher l’opération)</label><br>
+  <label><input type="radio" name="mode" value="direct"> Questions directes (7 × 8 = ?)</label><br>
+  <label><input type="radio" name="mode" value="operation"> Chercher l’opération (Quel calcul donne 56 ?)</label>
+
+  <p style="margin-top:10px;">
+    <label>Nombre de questions :
+      <input type="number" id="nbQuestions" min="5" max="50" value="15">
+    </label>
+  </p>
+
+  <p>
+    <label>Facteur maximum (jusqu’à × …) :
+      <input type="number" id="maxFactor" min="5" max="12" value="10">
+    </label>
+  </p>
+
+  <button onclick="saveConfig()">Enregistrer les réglages</button>
+  <p id="saveStatus" style="font-weight:bold;"></p>
+</div>
+
+<!-- MODE ENFANT -->
+<div class="container" id="exerciseSection" style="display:none;">
+  <h2>Mode enfant – Entraînement</h2>
+  <p style="font-size:1.1rem;margin-top:0;">Réponds aux questions de tables de multiplication.</p>
+
+  <div class="info-bar">
+    <span>Question : <span id="questionIndex">0</span> / <span id="questionTotal">0</span></span>
+    <span>Score : <span id="score">0</span></span>
+  </div>
+
+  <div class="progress">
+    <div class="progress-inner" id="progressInner"></div>
+  </div>
+
+  <p id="questionText" style="font-size:1.3rem;font-weight:bold;margin-top:8px;">
+    Les questions apparaîtront ici.
+  </p>
+  <p id="questionHelp" style="margin-top:0;"><small></small></p>
+
+  <div id="answerArea"></div>
+
+  <p id="feedback"></p>
+</div>
+
+<!-- RESULTATS -->
+<div class="container" id="result" style="display:none;">
+  <h2>Résultat</h2>
+  <p id="finalScore"></p>
+  <p><strong>Questions à retravailler :</strong></p>
+  <ul id="mistakes"></ul>
+  <button onclick="restart()">Recommencer</button>
+</div>
+
+<script>
+// ======================== CONFIG / MODE PARENT =========================
+var CONFIG_KEY = "tablesConfig_v1";
+
+function saveConfig() {
+  var tables = [];
+  var boxes = document.querySelectorAll("#tablesParent input[type='checkbox']");
+  var i;
+  for (i = 0; i < boxes.length; i++) {
+    if (boxes[i].checked) {
+      tables.push(parseInt(boxes[i].value, 10));
+    }
+  }
+  if (tables.length === 0) {
+    // si aucune table cochée, on prend tout 1–10
+    for (i = 1; i <= 10; i++) tables.push(i);
+  }
+
+  var radios = document.getElementsByName("mode");
+  var mode = "mixte";
+  for (i = 0; i < radios.length; i++) {
+    if (radios[i].checked) {
+      mode = radios[i].value;
+      break;
+    }
+  }
+
+  var nb = parseInt(document.getElementById("nbQuestions").value, 10);
+  if (isNaN(nb) || nb < 5) nb = 5;
+  if (nb > 50) nb = 50;
+
+  var mf = parseInt(document.getElementById("maxFactor").value, 10);
+  if (isNaN(mf) || mf < 5) mf = 5;
+  if (mf > 12) mf = 12;
+
+  var config = {
+    tables: tables,
+    mode: mode,
+    nbQuestions: nb,
+    maxFactor: mf
+  };
+
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  document.getElementById("saveStatus").textContent = "Réglages enregistrés !";
+
+  // on relance une nouvelle série enfant avec cette config
+  startExerciseWithConfig(config);
+}
+
+function loadConfig() {
+  var saved = localStorage.getItem(CONFIG_KEY);
+  if (!saved) return null;
+  try {
+    return JSON.parse(saved);
+  } catch(e) {
+    return null;
+  }
+}
+
+// initialisation des cases à cocher tables
+function initTablesUI(config) {
+  var container = document.getElementById("tablesParent");
+  var i;
+
+  for (i = 1; i <= 10; i++) {
+    var label = document.createElement("label");
+    var cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.value = String(i);
+
+    // Par défaut : coché, sinon on applique la config
+    cb.checked = true;
+    if (config && config.tables && config.tables.indexOf(i) === -1) {
+      cb.checked = false;
+    }
+
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(" table de " + i));
+    container.appendChild(label);
+  }
+
+  // appliquer les autres réglages si déjà sauvegardés
+  if (config) {
+    // mode
+    var radios = document.getElementsByName("mode");
+    for (i = 0; i < radios.length; i++) {
+      if (radios[i].value === config.mode) {
+        radios[i].checked = true;
+      }
+    }
+    document.getElementById("nbQuestions").value = config.nbQuestions;
+    document.getElementById("maxFactor").value = config.maxFactor;
+  }
+}
+
+// ======================== MODE ENFANT / EXERCICE =========================
+
+var questions = [];
+var currentIndex = 0;
+var score = 0;
+var mistakesList = [];
+
+function randChoice(arr) {
+  var idx = Math.floor(Math.random() * arr.length);
+  return arr[idx];
+}
+
+function shuffleArray(arr) {
+  var i, j, tmp;
+  for (i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+  }
+  return arr;
+}
+
+function generateDirectQuestion(tables, maxFactor) {
+  var a = randChoice(tables);
+  var b = 1 + Math.floor(Math.random() * maxFactor);
+  return {
+    type: "direct",
+    a: a,
+    b: b,
+    result: a * b
+  };
+}
+
+function generateOperationQuestion(tables, maxFactor) {
+  var base = generateDirectQuestion(tables, maxFactor);
+  var correctLabel = base.a + " × " + base.b;
+
+  var optionsSet = {};
+  var optionsArr = [];
+
+  function addOption(label) {
+    if (!optionsSet[label]) {
+      optionsSet[label] = true;
+      optionsArr.push(label);
+    }
+  }
+
+  addOption(correctLabel);
+
+  while (optionsArr.length < 4) {
+    var fake = generateDirectQuestion(tables, maxFactor);
+    addOption(fake.a + " × " + fake.b);
+  }
+
+  shuffleArray(optionsArr);
+
+  return {
+    type: "operation",
+    a: base.a,
+    b: base.b,
+    result: base.result,
+    options: optionsArr,
+    correctOption: correctLabel
+  };
+}
+
+// Prépare la liste de questions selon la config
+function buildQuestions(config) {
+  var list = [];
+  var i;
+  for (i = 0; i < config.nbQuestions; i++) {
+    var typeToUse = config.mode;
+    if (config.mode === "mixte") {
+      typeToUse = Math.random() < 0.5 ? "direct" : "operation";
+    }
+    if (typeToUse === "direct") {
+      list.push(generateDirectQuestion(config.tables, config.maxFactor));
+    } else {
+      list.push(generateOperationQuestion(config.tables, config.maxFactor));
+    }
+  }
+  return list;
+}
+
+function startExerciseWithConfig(config) {
+  questions = buildQuestions(config);
+  currentIndex = 0;
+  score = 0;
+  mistakesList = [];
+
+  document.getElementById("score").textContent = "0";
+  document.getElementById("questionIndex").textContent = "0";
+  document.getElementById("questionTotal").textContent = String(questions.length);
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("mistakes").innerHTML = "";
+  document.getElementById("finalScore").textContent = "";
+
+  document.getElementById("result").style.display = "none";
+  document.getElementById("exerciseSection").style.display = "block";
+
+  updateProgress();
+  showCurrentQuestion();
+}
+
+function updateProgress() {
+  var total = questions.length;
+  var idx = currentIndex;
+  document.getElementById("questionIndex").textContent = String(idx + 1 <= total ? idx + 1 : total);
+  document.getElementById("questionTotal").textContent = String(total);
+
+  var percent = total > 0 ? (idx / total) * 100 : 0;
+  document.getElementById("progressInner").style.width = percent + "%";
+}
+
+function showCurrentQuestion() {
+  var feedbackEl = document.getElementById("feedback");
+  feedbackEl.textContent = "";
+
+  if (currentIndex >= questions.length) {
+    endExercise();
+    return;
+  }
+
+  var q = questions[currentIndex];
+  var questionTextEl = document.getElementById("questionText");
+  var questionHelpEl = document.getElementById("questionHelp");
+  var answerArea = document.getElementById("answerArea");
+
+  answerArea.innerHTML = "";
+
+  if (q.type === "direct") {
+    questionTextEl.textContent = q.a + " × " + q.b + " = ?";
+    questionHelpEl.innerHTML = "<small>Écris le résultat.</small>";
+
+    var input = document.createElement("input");
+    input.type = "number";
+    input.id = "childAnswer";
+    input.placeholder = "Ta réponse";
+
+    var btn = document.createElement("button");
+    btn.textContent = "Valider";
+    btn.onclick = checkDirectAnswer;
+
+    answerArea.appendChild(input);
+    answerArea.appendChild(btn);
+
+    input.onkeydown = function(e) {
+      e = e || window.event;
+      if (e.key === "Enter" || e.keyCode === 13) {
+        checkDirectAnswer();
+      }
+    };
+
+    input.focus();
+  } else {
+    questionTextEl.textContent = "Quel calcul donne " + q.result + " ?";
+    questionHelpEl.innerHTML = "<small>Clique sur la bonne opération.</small>";
+
+    var grid = document.createElement("div");
+    grid.className = "quiz-options";
+
+    var i;
+    for (i = 0; i < q.options.length; i++) {
+      (function(label) {
+        var b = document.createElement("button");
+        b.textContent = label;
+        b.onclick = function() {
+          checkOperationAnswer(label);
+        };
+        grid.appendChild(b);
+      })(q.options[i]);
+    }
+
+    answerArea.appendChild(grid);
+  }
+
+  updateProgress();
+}
+
+function checkDirectAnswer() {
+  var q = questions[currentIndex];
+  var input = document.getElementById("childAnswer");
+  if (!input) return;
+
+  var val = input.value.trim();
+  var feedbackEl = document.getElementById("feedback");
+
+  if (val === "") {
+    feedbackEl.textContent = "Écris une réponse avant de valider 🙂";
+    return;
+  }
+
+  var user = parseInt(val, 10);
+  var correct = q.result;
+
+  if (user === correct) {
+    feedbackEl.textContent = "Correct !";
+    score++;
+    document.getElementById("score").textContent = String(score);
+  } else {
+    feedbackEl.textContent = "Incorrect.";
+    mistakesList.push({
+      question: q.a + " × " + q.b + " = " + correct,
+      child: val
+    });
+  }
+
+  currentIndex++;
+  setTimeout(showCurrentQuestion, 600);
+}
+
+function checkOperationAnswer(label) {
+  var q = questions[currentIndex];
+  var feedbackEl = document.getElementById("feedback");
+
+  if (label === q.correctOption) {
+    feedbackEl.textContent = "Correct !";
+    score++;
+    document.getElementById("score").textContent = String(score);
+  } else {
+    feedbackEl.textContent = "Incorrect.";
+    mistakesList.push({
+      question: q.correctOption + " = " + q.result,
+      child: label
+    });
+  }
+
+  currentIndex++;
+  setTimeout(showCurrentQuestion, 600);
+}
+
+function endExercise() {
+  document.getElementById("exerciseSection").style.display = "none";
+  document.getElementById("result").style.display = "block";
+
+  var total = questions.length;
+  var txt = "Score : " + score + " / " + total;
+  document.getElementById("finalScore").textContent = txt;
+
+  var ul = document.getElementById("mistakes");
+  var i;
+  for (i = 0; i < mistakesList.length; i++) {
+    var li = document.createElement("li");
+    li.textContent = mistakesList[i].question + " (ta réponse : " + mistakesList[i].child + ")";
+    ul.appendChild(li);
+  }
+}
+
+function restart() {
+  // comme pour orthographe : on recharge simplement la page
+  location.reload();
+}
+
+// ======================== INIT GLOBAL =========================
+function init() {
+  var savedConfig = loadConfig();
+  initTablesUI(savedConfig);
+  if (savedConfig) {
+    // si une config existe, on affiche directement le mode enfant
+    startExerciseWithConfig(savedConfig);
+    document.getElementById("saveStatus").textContent = "Réglages chargés.";
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+</script>
+
+</body>
+</html>

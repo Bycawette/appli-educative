@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Géographie – Mode autonome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f4f6fb;
+      color: #222;
+    }
+
+    header {
+      background: #4455aa;
+      color: #fff;
+      padding: 1rem 1.2rem;
+      text-align: center;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 1rem auto 2rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    .btn {
+      background: #4455aa;
+      color: #fff;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .btn:hover {
+      background: #36468a;
+    }
+
+    #feedback.ok { color: #1a8b33; }
+    #feedback.ko { color: #c0392b; }
+
+    .level-label {
+      display: block;
+      margin: 4px 0;
+    }
+
+    .map-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    #map-belgique {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+    }
+
+    /* Marqueur de la bonne zone */
+    #marker {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 3px solid #ff4444;
+      background: rgba(255, 255, 255, 0.4);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+    }
+
+    #question-label {
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+
+    #big-name {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      min-height: 1.6rem;
+      margin-top: 0.3rem;
+    }
+
+    #summary-list {
+      margin-top: 0.5rem;
+      padding-left: 1.2rem;
+    }
+
+    #summary-list li {
+      margin-bottom: 0.3rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Géographie – Mode autonome</h1>
+</header>
+
+<!-- 🔙 Bouton retour à l'accueil -->
+<div style="margin:10px;">
+  <a href="index.html"
+     style="display:inline-block;background:#4455aa;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
+    ⟵ Retour à l’accueil
+  </a>
+</div>
+
+<main>
+  <!-- 🎛️ CONFIGURATION / NIVEAU -->
+  <section id="config" class="card">
+    <h2>Choisis ton niveau</h2>
+    <p><strong>Que veux-tu travailler ?</strong></p>
+
+    <label class="level-label">
+      <input type="radio" name="level" value="villes" checked>
+      Grandes villes (Bruxelles, Liège, Gand, Bruges…)
+    </label>
+    <label class="level-label">
+      <input type="radio" name="level" value="capitales">
+      Capitales provinciales
+    </label>
+    <label class="level-label">
+      <input type="radio" name="level" value="regions">
+      Régions et communautés
+    </label>
+    <label class="level-label">
+      <input type="radio" name="level" value="mix">
+      Mélange de tout
+    </label>
+
+    <p style="margin-top:0.8rem;"><strong>Nombre de questions :</strong></p>
+    <select id="question-count">
+      <option value="5">5</option>
+      <option value="10" selected>10</option>
+      <option value="15">15</option>
+    </select>
+
+    <div style="margin-top:0.9rem;">
+      <button id="start-btn" class="btn">Commencer</button>
+    </div>
+  </section>
+
+  <!-- 🗺️ JEU SUR CARTE -->
+  <section id="session" class="card" style="display:none;">
+    <h2>Place les lieux sur la carte</h2>
+
+    <p id="question-label"></p>
+
+    <div class="map-wrapper">
+      <img id="map-belgique" src="belgique.png" alt="Carte de la Belgique">
+      <div id="marker"></div>
+    </div>
+
+    <p id="big-name"></p>
+    <p id="feedback" style="text-align:center;min-height:1.4rem;"></p>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;margin-top:0.5rem;">
+      <span>Question <strong id="progress-num">1</strong> / <span id="progress-total">10</span></span>
+      <span>Score : <strong id="score">0</strong></span>
+      <button id="next-btn" class="btn" disabled>Question suivante</button>
+    </div>
+  </section>
+
+  <!-- 📊 RÉCAPITULATIF -->
+  <section id="summary" class="card" style="display:none;">
+    <h2>Résumé de ta session</h2>
+    <p>Score : <strong id="sum-score">0</strong> / <span id="sum-total">0</span></p>
+    <p id="sum-comment"></p>
+
+    <h3>Tu t'es trompé sur :</h3>
+    <ul id="summary-list"></ul>
+
+    <div style="margin-top:0.8rem;">
+      <button id="restart-btn" class="btn">Refaire une session</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  // =========================
+  // DONNÉES GÉO (approx %)
+  // =========================
+  // x, y en POURCENTAGE par rapport à l'image (0 à 100)
+  // Ce sont des positions approximatives, tu pourras les ajuster si besoin.
+
+  const DATA_VILLES = [
+    { name: "Bruxelles", type: "ville", x: 48, y: 45 },
+    { name: "Liège", type: "ville", x: 75, y: 42 },
+    { name: "Gand", type: "ville", x: 30, y: 35 },
+    { name: "Bruges", type: "ville", x: 20, y: 30 },
+    { name: "Anvers", type: "ville", x: 40, y: 25 },
+    { name: "Namur", type: "ville", x: 50, y: 58 },
+    { name: "Mons", type: "ville", x: 35, y: 62 },
+    { name: "Charleroi", type: "ville", x: 45, y: 67 }
+  ];
+
+  const DATA_CAPITALES = [
+    { name: "Mons (Hainaut)", type: "capitale", x: 35, y: 62 },
+    { name: "Namur (Namur)", type: "capitale", x: 50, y: 58 },
+    { name: "Liège (Liège)", type: "capitale", x: 75, y: 42 },
+    { name: "Arlon (Luxembourg)", type: "capitale", x: 78, y: 80 },
+    { name: "Bruxelles (Brabant)", type: "capitale", x: 48, y: 45 },
+    { name: "Louvain (Brabant flamand)", type: "capitale", x: 50, y: 38 },
+    { name: "Hasselt (Limbourg)", type: "capitale", x: 65, y: 30 },
+    { name: "Gand (Flandre orientale)", type: "capitale", x: 30, y: 35 },
+    { name: "Bruges (Flandre occidentale)", type: "capitale", x: 20, y: 30 },
+    { name: "Anvers (Anvers)", type: "capitale", x: 40, y: 25 }
+  ];
+
+  const DATA_REGIONS = [
+    { name: "Région wallonne", type: "region", x: 50, y: 70 },
+    { name: "Région flamande", type: "region", x: 45, y: 30 },
+    { name: "Région de Bruxelles-Capitale", type: "region", x: 48, y: 45 },
+    { name: "Communauté germanophone", type: "region", x: 82, y: 52 }
+  ];
+
+  // Rayon de tolérance (en % de la largeur/hauteur)
+  const HIT_RADIUS = 7; // plus grand = clic plus "tolérant"
+
+  // =========================
+  // RÉFÉRENCES DOM
+  // =========================
+  const configSection = document.getElementById("config");
+  const sessionSection = document.getElementById("session");
+  const summarySection = document.getElementById("summary");
+
+  const startBtn = document.getElementById("start-btn");
+  const restartBtn = document.getElementById("restart-btn");
+  const questionCountSelect = document.getElementById("question-count");
+  const levelRadios = [...document.querySelectorAll('input[name="level"]')];
+
+  const mapImg = document.getElementById("map-belgique");
+  const marker = document.getElementById("marker");
+  const questionLabel = document.getElementById("question-label");
+  const bigName = document.getElementById("big-name");
+  const feedback = document.getElementById("feedback");
+  const scoreSpan = document.getElementById("score");
+  const progressNum = document.getElementById("progress-num");
+  const progressTotal = document.getElementById("progress-total");
+  const nextBtn = document.getElementById("next-btn");
+
+  const sumScore = document.getElementById("sum-score");
+  const sumTotal = document.getElementById("sum-total");
+  const sumComment = document.getElementById("sum-comment");
+  const summaryList = document.getElementById("summary-list");
+
+  // =========================
+  // ÉTAT DE LA SESSION
+  // =========================
+  const state = {
+    pool: [],
+    total: 10,
+    index: 0,
+    score: 0,
+    current: null,
+    mistakes: []
+  };
+
+  // =========================
+  // OUTILS
+  // =========================
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function getSelectedLevel() {
+    const r = levelRadios.find(r => r.checked);
+    return r ? r.value : "villes";
+  }
+
+  function buildPool(level) {
+    let items = [];
+    if (level === "villes") {
+      items = [...DATA_VILLES];
+    } else if (level === "capitales") {
+      items = [...DATA_CAPITALES];
+    } else if (level === "regions") {
+      items = [...DATA_REGIONS];
+    } else { // mix
+      items = [...DATA_VILLES, ...DATA_CAPITALES, ...DATA_REGIONS];
+    }
+    return shuffle(items);
+  }
+
+  // =========================
+  // DÉMARRAGE
+  // =========================
+  startBtn.addEventListener("click", () => {
+    const level = getSelectedLevel();
+    state.pool = buildPool(level);
+    state.total = Number(questionCountSelect.value);
+    if (state.pool.length < state.total) {
+      // si peu d'éléments, on boucle
+      const extra = [];
+      while (state.pool.length + extra.length < state.total) {
+        extra.push(...state.pool);
+      }
+      state.pool = shuffle([...state.pool, ...extra]).slice(0, state.total);
+    } else {
+      state.pool = state.pool.slice(0, state.total);
+    }
+
+    state.index = 0;
+    state.score = 0;
+    state.mistakes = [];
+    scoreSpan.textContent = "0";
+    progressTotal.textContent = String(state.total);
+    progressNum.textContent = "1";
+    feedback.textContent = "";
+    feedback.className = "";
+    bigName.textContent = "";
+    marker.style.display = "none";
+
+    configSection.style.display = "none";
+    summarySection.style.display = "none";
+    sessionSection.style.display = "block";
+
+    askQuestion();
+  });
+
+  restartBtn.addEventListener("click", () => {
+    summarySection.style.display = "none";
+    configSection.style.display = "block";
+  });
+
+  // =========================
+  // QUESTIONS
+  // =========================
+  function askQuestion() {
+    if (state.index >= state.total) {
+      endSession();
+      return;
+    }
+
+    const item = state.pool[state.index];
+    state.current = item;
+
+    questionLabel.textContent = `Clique sur : ${item.name}`;
+    bigName.textContent = "";
+    feedback.textContent = "";
+    feedback.className = "";
+    marker.style.display = "none";
+    nextBtn.disabled = true;
+
+    progressNum.textContent = String(state.index + 1);
+  }
+
+  // gestion du clic sur la carte
+  mapImg.addEventListener("click", (event) => {
+    if (!state.current || !sessionSection.style.display || sessionSection.style.display === "none") {
+      return;
+    }
+    if (!nextBtn.disabled) {
+      // question déjà répondue
+      return;
+    }
+
+    const rect = mapImg.getBoundingClientRect();
+    const clickX = ((event.clientX - rect.left) / rect.width) * 100;
+    const clickY = ((event.clientY - rect.top) / rect.height) * 100;
+
+    const item = state.current;
+    const dx = Math.abs(clickX - item.x);
+    const dy = Math.abs(clickY - item.y);
+    const ok = (dx <= HIT_RADIUS && dy <= HIT_RADIUS);
+
+    // placer le marqueur sur la "bonne" position
+    marker.style.left = item.x + "%";
+    marker.style.top = item.y + "%";
+    marker.style.display = "block";
+
+    bigName.textContent = item.name;
+
+    if (ok) {
+      state.score++;
+      scoreSpan.textContent = String(state.score);
+      feedback.textContent = "Bravo, c'est bien là !";
+      feedback.className = "ok";
+    } else {
+      feedback.textContent = "Pas tout à fait… Regarde bien où c'était.";
+      feedback.className = "ko";
+      state.mistakes.push(item);
+    }
+
+    nextBtn.disabled = false;
+  });
+
+  nextBtn.addEventListener("click", () => {
+    state.index++;
+    askQuestion();
+  });
+
+  // =========================
+  // FIN DE SESSION
+  // =========================
+  function endSession() {
+    sessionSection.style.display = "none";
+    summarySection.style.display = "block";
+
+    sumScore.textContent = String(state.score);
+    sumTotal.textContent = String(state.total);
+
+    const pct = Math.round((state.score / state.total) * 100);
+    if (pct === 100) {
+      sumComment.textContent = "Parfait, tu connais super bien la carte 👏";
+    } else if (pct >= 70) {
+      sumComment.textContent = "Très bien ! Encore un peu d'entraînement pour être au top 💪";
+    } else {
+      sumComment.textContent = "Ça viendra avec la pratique, tu peux refaire une session 😊";
+    }
+
+    summaryList.innerHTML = "";
+    if (state.mistakes.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "Aucune erreur, bravo !";
+      summaryList.appendChild(li);
+    } else {
+      const seen = new Set();
+      state.mistakes.forEach(item => {
+        if (seen.has(item.name)) return;
+        seen.add(item.name);
+        const li = document.createElement("li");
+        li.textContent = item.name;
+        summaryList.appendChild(li);
+      });
+    }
+
+    // (Optionnel) Sauvegarde pour le parent plus tard
+    // On peut ajouter un localStorage "geo_stats" comme pour les maths
+  }
+</script>
+
+</body>
+</html>

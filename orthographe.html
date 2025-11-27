@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Orthographe – Dictée</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f6fb;
+  color: #222;
+}
+header {
+  background: #C04A4A;
+  color: #fff;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+.container {
+  max-width: 800px;
+  margin: 1rem auto;
+  background: #ffffff;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+textarea {
+  width: 100%;
+  height: 120px;
+  margin-top: 8px;
+  padding: 8px;
+}
+button {
+  background: #C04A4A;
+  color: #fff;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+button:hover { background: #9c3d3d; }
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+#feedback { font-weight:bold; margin-top: 8px; }
+ul { padding-left: 20px; }
+</style>
+</head>
+
+<body>
+
+<header>Orthographe – Dictée</header>
+
+<div style="margin:10px;">
+  <a href="index.html" style="display:inline-block;background:#C04A4A;color:#fff;padding:6px 12px;border-radius:8px;text-decoration:none;font-size:0.9rem;">
+    ⟵ Retour à l'accueil
+  </a>
+</div>
+
+<!-- MODE PARENT -->
+<div class="container">
+  <h2>Mode parent – Encoder les mots</h2>
+  <p>Saisir <strong>un mot par ligne</strong> :</p>
+  <textarea id="wordList"></textarea>
+  <button onclick="saveWords()">Enregistrer la liste</button>
+  <p id="saveStatus" style="font-weight:bold;"></p>
+</div>
+
+<!-- MODE ENFANT -->
+<div class="container" id="exerciseSection" style="display:none;">
+  <h2>Mode enfant – Dictée</h2>
+  <p style="font-size:1.3rem;font-weight:bold;margin-top:0;">Écris le mot que tu entends</p>
+
+  <button onclick="speak(currentWord)">▶️ Écouter</button>
+
+  <input type="text" id="childAnswer" placeholder="Écris ici ton mot">
+  <button onclick="checkAnswer()">Valider</button>
+
+  <p id="feedback"></p>
+  <p>Score : <span id="score">0</span> / <span id="total">0</span></p>
+</div>
+
+<!-- RESULTATS -->
+<div class="container" id="result" style="display:none;">
+  <h2>Résultat</h2>
+  <p id="finalScore"></p>
+  <p><strong>Mots à retravailler :</strong></p>
+  <ul id="mistakes"></ul>
+  <button onclick="restart()">Recommencer</button>
+</div>
+
+<script>
+// Synthèse vocale FR
+function speak(word) {
+  const msg = new SpeechSynthesisUtterance(word);
+  msg.lang = "fr-FR";
+  speechSynthesis.speak(msg);
+}
+
+// Variables globales
+let words = [];
+let remaining = [];
+let currentWord = "";
+let total = 0;
+let score = 0;
+let mistakesList = [];
+
+// Sauvegarde parent
+function saveWords() {
+  const list = document.getElementById("wordList").value.trim().split('\n').filter(w => w.trim() !== "");
+  if(list.length === 0) {
+    document.getElementById("saveStatus").textContent = "Aucun mot enregistré.";
+    return;
+  }
+  localStorage.setItem("ortholist", JSON.stringify(list));
+  document.getElementById("saveStatus").textContent = "Liste enregistrée !";
+  loadWords();
+}
+
+// Chargement des mots
+function loadWords() {
+  const saved = localStorage.getItem("ortholist");
+  if(saved) {
+    words = JSON.parse(saved);
+    remaining = [...words];
+    total = remaining.length;
+    document.getElementById("total").textContent = total;
+    document.getElementById("exerciseSection").style.display = "block";
+    newWord();
+  }
+}
+
+// Nouvelle dictée
+function newWord() {
+  currentWord = remaining[Math.floor(Math.random() * remaining.length)];
+  document.getElementById("childAnswer").value = "";
+  document.getElementById("feedback").textContent = "";
+}
+
+// Vérification
+function checkAnswer() {
+  const ans = document.getElementById("childAnswer").value.trim();
+  if(ans.toLowerCase() === currentWord.toLowerCase()) {
+    score++;
+    document.getElementById("score").textContent = score;
+    document.getElementById("feedback").textContent = "Correct !";
+    remaining = remaining.filter(w => w !== currentWord);
+  } else {
+    mistakesList.push(currentWord);
+    document.getElementById("feedback").textContent = "Incorrect.";
+  }
+
+  if(remaining.length > 0) {
+    newWord();
+  } else {
+    end();
+  }
+}
+
+// Fin
+function end() {
+  document.getElementById("exerciseSection").style.display = "none";
+  document.getElementById("result").style.display = "block";
+  document.getElementById("finalScore").textContent = "Score : " + score + " / " + total;
+  const ul = document.getElementById("mistakes");
+  mistakesList.forEach(m => {
+    const li = document.createElement("li");
+    li.textContent = m;
+    ul.appendChild(li);
+  });
+}
+
+// Restart
+function restart() {
+  location.reload();
+}
+
+loadWords();
+</script>
+
+</body>
+</html>
